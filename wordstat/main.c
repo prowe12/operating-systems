@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
 
 	// declare and initialize the histogram
 	int histogram[ALPHABET_SIZE];
-	// printSimpleHistogram(histogram, ALPHABET_SIZE);
+	initializeHistogram(histogram, ALPHABET_SIZE);
+	printSimpleHistogram(histogram, ALPHABET_SIZE);
 
 	// TODO: start by getting strings from users until # is input
 	printf("Enter strings (# to stop):\n");
@@ -35,7 +36,8 @@ int main(int argc, char *argv[])
 		printf("string is: %s\n", buf);
 
 		// Increment letters in histogram
-		incrementHistogram(buf, histogram);
+		incrementHistogram(buf, histogram, ALPHABET_SIZE);
+		printSimpleHistogram(histogram, ALPHABET_SIZE);
 	}
 
 	// TODO: after # is input, print menu options
@@ -47,13 +49,10 @@ int main(int argc, char *argv[])
 	{
 		count++;
 		opt = getMenuOption();
-		printf("opt is %d\n", opt);
 
 		// TODO: Print stats based on user input
 		if ((opt == 1) || (opt == 2))
 		{
-			printf("print vowel and consonant frequency or ");
-			printf("print histogram\n");
 			printStats(opt, histogram, ALPHABET_SIZE);
 		}
 		else if (opt == 3)
