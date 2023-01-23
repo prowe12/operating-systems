@@ -12,6 +12,26 @@
 #define MAXSTRLEN 128
 
 /**
+ * Get strings from user and increment histogram
+ * @param  The starting histogram (counts per letter)
+ */
+// void inputStrings(int histogram[])
+// {
+// 	// TODO: This code does not work; why?
+// 	char buf[MAXSTRLEN] = "";
+
+// 	printf("Enter strings (# to stop):\n");
+// 	while (strcmp(buf, "#\n") != 0)
+// 	{
+// 		// Get the string input by the user
+// 		fgets(buf, MAXSTRLEN, stdin);
+
+// 		// Increment letters in histogram
+// 		incrementHistogram(buf, histogram, ALPHABET_SIZE);
+// 	}
+// }
+
+/**
  * @brief Main function
  *
  * @param argc Ignore
@@ -20,51 +40,47 @@
  */
 int main(int argc, char *argv[])
 {
-	char buf[MAXSTRLEN] = "";
 
-	// declare and initialize the histogram
+	// Declare and initialize the histogram
 	int histogram[ALPHABET_SIZE];
 	initializeHistogram(histogram, ALPHABET_SIZE);
-	printSimpleHistogram(histogram, ALPHABET_SIZE);
 
-	// TODO: start by getting strings from users until # is input
-	printf("Enter strings (# to stop):\n");
-	while (strcmp(buf, "#\n") != 0)
-	{
-		// Get the string input by the user
-		fgets(buf, MAXSTRLEN, stdin);
-
-		// Increment letters in histogram
-		incrementHistogram(buf, histogram, ALPHABET_SIZE);
-		printSimpleHistogram(histogram, ALPHABET_SIZE);
-	}
-
-	// TODO: after # is input, print menu options
 	// Only repeat this a maximum of maxrepeats times
 	int maxrepeats = 1000;
 	int count = 0;
-	int opt;
+	int opt = 3;
 	while (count < maxrepeats)
 	{
 		count++;
-		opt = getMenuOption();
 
-		// TODO: Print stats based on user input
 		if ((opt == 1) || (opt == 2))
 		{
 			printStats(opt, histogram, ALPHABET_SIZE);
 		}
 		else if (opt == 3)
 		{
-			printf("return to inputting more strings");
-			// TODO: concatenate letters with getstrings() result
-			// int letters[] = getstrings();
+			printf("Enter strings (# to stop):\n");
+			char buf[MAXSTRLEN] = "";
+			while (strcmp(buf, "#\n") != 0)
+			{
+				// Get the string input by the user
+				fgets(buf, MAXSTRLEN, stdin);
+
+				// Increment letters in histogram
+				incrementHistogram(buf, histogram, ALPHABET_SIZE);
+				printSimpleHistogram(histogram, ALPHABET_SIZE);
+			}
 		}
 		else if (opt == 4)
 		{
-			printf("quitting");
+			printf("Exiting...\n");
 			return 0;
 		}
+		else
+		{
+			printf("Unexpected result.");
+		}
+		opt = getMenuOption();
 	}
 
 	printf("Please try again (the menu repeats a maximum of %d times)\n", maxrepeats);

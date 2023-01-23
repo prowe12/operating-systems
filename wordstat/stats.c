@@ -30,12 +30,12 @@ void initializeHistogram(int hist[], int histlen)
  */
 void printSimpleHistogram(int hist[], int histLen)
 {
-    printf("The values are: ");
+    printf("\nThe histogram is: ");
     for (int i = 0; i < histLen; i++)
     {
         printf("%d, ", hist[i]);
     }
-    printf("\n");
+    printf("\n\n");
 }
 
 /*
