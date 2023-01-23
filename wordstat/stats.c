@@ -90,7 +90,7 @@ void printFrequencies(int hist[])
     int ntotal = nvowel + nconsonant;
     float vowelpc = nvowel / (float)ntotal * 100;
     float consonantpc = nconsonant / (float)ntotal * 100;
-    printf("Vowels = %d (%2.2f%%), Consonants = %d (%2.2f%%), Total= %d\n", nvowel, vowelpc, nconsonant, consonantpc, ntotal);
+    printf("\nVowels = %d (%2.2f%%), Consonants = %d (%2.2f%%), Total= %d\n\n", nvowel, vowelpc, nconsonant, consonantpc, ntotal);
 }
 
 /**
@@ -100,7 +100,7 @@ void printFrequencies(int hist[])
 void printHistogram(int hist[])
 {
     char *alphabet = "abcdefghijklmnopqrstuvwxyz";
-    int alphabetlen = 25;
+    int alphabetlen = 26;
     int maxcount = 0;
 
     // Get the maximum occurrences for any letter
@@ -167,11 +167,10 @@ void printHistogram(int hist[])
             nspacesnum++;
         }
         int nspaceshere = nspaces - nspacesnum;
-        // printf("nspacesnum: %d\n", nspacesnum);
-        // printf("nspaceshere: %d\n", nspaceshere);
         spaces[nspaceshere] = '\0';
         printf("%d%s", hist[i], spaces);
     }
+    printf("\n");
     printf("\n");
 }
 
@@ -182,22 +181,35 @@ void printHistogram(int hist[])
  * Notes:
  * For histogram, the elements correspond to:
  * a b c d e f g h i j k l m n o p q r s t u v w x y z
+ * A B C D E F G H I J K etc
  * Recall that
  */
 void incrementHistogram(char newstr[], int hist[], int histlen)
 {
-    int num;
+    int ihist;
     int i;
 
     // Loop over the string and if a letter is found,
     // increment the count in histogram
+    // TODO: Add capital letters
     i = 0;
     while (newstr[i] != '\0')
     {
-        num = newstr[i] - 97;
-        if (num < histlen)
+        ihist = newstr[i] - 97;
+        printf("\n");
+        printf("next char: %c: \n", newstr[i]);
+        printf("as number: %d: \n\n", newstr[i]);
+        if ((ihist >= 0) && (ihist < histlen))
         {
-            hist[num] += 1;
+            hist[ihist] += 1;
+        }
+        else
+        {
+            ihist = newstr[i] - 65;
+            if ((ihist >= 0) || (ihist < histlen))
+            {
+                hist[ihist] += 1;
+            }
         }
         i++;
     }
