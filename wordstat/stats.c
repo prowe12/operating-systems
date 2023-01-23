@@ -48,22 +48,22 @@ void printSimpleHistogram(int hist[], int histLen)
  */
 void printStats(int opt, int hist[], int histLen)
 {
-    printf("In printStats, with option %d:\n", opt);
 
     if (opt == 1)
     {
-        printFrequencies(hist, histLen);
+        printFrequencies(hist);
     }
     else if (opt == 2)
     {
         // TODO: implement option 2
-        printf("option 2\n");
+        printHistogram(hist);
     }
 }
 
-// TODO: function definitions for dealing with histogram below
-
-void printFrequencies(int hist[], int histLen)
+/**
+ * Print the frequencies of the vowels and consonants
+ */
+void printFrequencies(int hist[])
 {
     int nvowel = 0;
     int nconsonant = 0;
@@ -91,6 +91,88 @@ void printFrequencies(int hist[], int histLen)
     float vowelpc = nvowel / (float)ntotal * 100;
     float consonantpc = nconsonant / (float)ntotal * 100;
     printf("Vowels = %d (%2.2f%%), Consonants = %d (%2.2f%%), Total= %d\n", nvowel, vowelpc, nconsonant, consonantpc, ntotal);
+}
+
+/**
+ * Pretty print the histogram
+ * @params hist  The counts of each letter
+ */
+void printHistogram(int hist[])
+{
+    char *alphabet = "abcdefghijklmnopqrstuvwxyz";
+    int alphabetlen = 25;
+    int maxcount = 0;
+
+    // Get the maximum occurrences for any letter
+    for (int i = 0; i < alphabetlen; i++)
+    {
+        if (hist[i] > maxcount)
+        {
+            maxcount = hist[i];
+        }
+    }
+
+    // Set the spacing
+    // TODO: Make this a function
+    int nspaces = 1;
+    float curr = maxcount;
+    while (curr >= 10)
+    {
+        curr = curr / 10.;
+        nspaces++;
+    }
+    char spaces[] = "           ";
+    spaces[nspaces] = '\0';
+
+    // Print the histogram
+    printf("\n");
+    for (int count = maxcount; maxcount > 0; maxcount--)
+    {
+        for (int i = 0; i < alphabetlen; i++)
+        {
+            if (hist[i] >= maxcount)
+            {
+                printf("*%s", spaces);
+            }
+            else
+            {
+                printf(" %s", spaces);
+            }
+        }
+        printf("\n");
+    }
+
+    // Print the alphabet
+    // TODO Create the string in the above loop, and then just print it here
+    for (int i = 0; i < alphabetlen; i++)
+    {
+        printf("%c%s", alphabet[i], spaces);
+        if (hist[i] > maxcount)
+        {
+            maxcount = hist[i];
+        }
+    }
+    printf("\n");
+
+    // Print the number of occurences of each letter
+    // TODO: Handle spacing for frequencies > 9
+    for (int i = 0; i < alphabetlen; i++)
+    {
+        char spaces[] = "           ";
+        int nspacesnum = 0;
+        float curr = hist[i];
+        while (curr >= 10)
+        {
+            curr = curr / 10.;
+            nspacesnum++;
+        }
+        int nspaceshere = nspaces - nspacesnum;
+        // printf("nspacesnum: %d\n", nspacesnum);
+        // printf("nspaceshere: %d\n", nspaceshere);
+        spaces[nspaceshere] = '\0';
+        printf("%d%s", hist[i], spaces);
+    }
+    printf("\n");
 }
 
 /**

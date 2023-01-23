@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
 	{
 		// Get the string input by the user
 		fgets(buf, MAXSTRLEN, stdin);
-		printf("string is: %s\n", buf);
 
 		// Increment letters in histogram
 		incrementHistogram(buf, histogram, ALPHABET_SIZE);

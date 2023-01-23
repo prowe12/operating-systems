@@ -13,6 +13,7 @@ void initializeHistogram(int hist[], int histlen);
 void incrementHistogram(char newstr[], int hist[], int histlen);
 void printStats(int opt, int hist[], int histLen);
 void printSimpleHistogram(int hist[], int histLen);
-void printFrequencies(int hist[], int histLen);
+void printFrequencies(int hist[]);
+void printHistogram(int hist[]);
 
 #endif /* STATS_H_ */
