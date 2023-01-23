@@ -196,9 +196,6 @@ void incrementHistogram(char newstr[], int hist[], int histlen)
     while (newstr[i] != '\0')
     {
         ihist = newstr[i] - 97;
-        printf("\n");
-        printf("next char: %c: \n", newstr[i]);
-        printf("as number: %d: \n\n", newstr[i]);
         if ((ihist >= 0) && (ihist < histlen))
         {
             hist[ihist] += 1;
