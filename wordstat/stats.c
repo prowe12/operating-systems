@@ -208,29 +208,27 @@ void printHistogram(int hist[])
 void incrementHistogram(char newstr[], int hist[], int histlen)
 {
     int ihist;
-    int i;
 
     // Loop over the string and if a letter is found,
     // increment the count in histogram
-    i = 0;
+    int i = 0;
     while (newstr[i] != '\0')
     {
+        // Uppercase: 65 - 91
+        // Lowercase 97 - 123
+        int iupper = 65;
+        int ilower = 97;
 
         // Get the lowercase
-        ihist = newstr[i] - 97;
+        ihist = newstr[i];
 
-        if ((ihist >= 0) && (ihist < histlen))
+        if ((ihist >= ilower) && (ihist < ilower + histlen))
         {
-            hist[ihist] += 1;
+            hist[ihist - ilower] += 1;
         }
-        else
+        else if ((ihist >= iupper) && (ihist < iupper + histlen))
         {
-            // Get the uppercase
-            int ihist = newstr[i] - 65;
-            if ((ihist >= 0) && (ihist < histlen))
-            {
-                hist[ihist] += 1;
-            }
+            hist[ihist - iupper] += 1;
         }
         i++;
     }
