@@ -70,11 +70,17 @@ int main(int argc, char *argv[])
 			// inputStrings(histogram);
 
 			printf("Enter strings (# to stop):\n");
-			char buf[MAXSTRLEN] = "";
-			while (strcmp(buf, "#\n") != 0)
+			char buf[MAXSTRLEN];
+			int notdone = 1;
+			while (notdone == 1)
 			{
 				// Get the string input by the user
 				fgets(buf, MAXSTRLEN, stdin);
+				if (strcmp(buf, "#\n") == 0)
+				{
+					notdone = 0;
+					break;
+				}
 
 				// Increment letters in histogram
 				incrementHistogram(buf, histogram, ALPHABET_SIZE);
