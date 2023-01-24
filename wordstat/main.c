@@ -26,9 +26,17 @@
 // 		// Get the string input by the user
 // 		fgets(buf, MAXSTRLEN, stdin);
 
+// 		printf("About to move on \n");
+
+// 		printSimpleHistogram(histogram, 26);
+
 // 		// Increment letters in histogram
 // 		incrementHistogram(buf, histogram, ALPHABET_SIZE);
+// 		printf("back from incrementHistogram\n");
+// 		buf[5] = '\0';
+// 		printf("buf is: %s\n", buf);
 // 	}
+// 	printf("back\n");
 // }
 
 /**
@@ -59,6 +67,8 @@ int main(int argc, char *argv[])
 		}
 		else if (opt == 3)
 		{
+			// inputStrings(histogram);
+
 			printf("Enter strings (# to stop):\n");
 			char buf[MAXSTRLEN] = "";
 			while (strcmp(buf, "#\n") != 0)
@@ -68,7 +78,6 @@ int main(int argc, char *argv[])
 
 				// Increment letters in histogram
 				incrementHistogram(buf, histogram, ALPHABET_SIZE);
-				printSimpleHistogram(histogram, ALPHABET_SIZE);
 			}
 		}
 		else if (opt == 4)
