@@ -55,7 +55,6 @@ void printStats(int opt, int hist[], int histLen)
     }
     else if (opt == 2)
     {
-        // TODO: implement option 2
         printHistogram(hist);
     }
 }
@@ -178,7 +177,6 @@ void printHistogram(int hist[])
     printf("\n");
 
     // Print the number of occurences of each letter
-    // TODO: Handle spacing for frequencies > 9
     for (int i = 0; i < alphabetlen; i++)
     {
         char spaces[] = "           ";
@@ -214,12 +212,13 @@ void incrementHistogram(char newstr[], int hist[], int histlen)
 
     // Loop over the string and if a letter is found,
     // increment the count in histogram
-    // TODO: Add capital letters
     i = 0;
     while (newstr[i] != '\0')
     {
+
         // Get the lowercase
         ihist = newstr[i] - 97;
+
         if ((ihist >= 0) && (ihist < histlen))
         {
             hist[ihist] += 1;
@@ -227,8 +226,8 @@ void incrementHistogram(char newstr[], int hist[], int histlen)
         else
         {
             // Get the uppercase
-            ihist = newstr[i] - 65;
-            if ((ihist >= 0) || (ihist < histlen))
+            int ihist = newstr[i] - 65;
+            if ((ihist >= 0) && (ihist < histlen))
             {
                 hist[ihist] += 1;
             }
