@@ -218,7 +218,6 @@ void incrementHistogram(char newstr[], int hist[], int histlen)
     i = 0;
     while (newstr[i] != '\0')
     {
-
         // Get the lowercase
         ihist = newstr[i] - 97;
         if ((ihist >= 0) && (ihist < histlen))
