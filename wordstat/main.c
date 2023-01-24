@@ -15,29 +15,20 @@
  * Get strings from user and increment histogram
  * @param  The starting histogram (counts per letter)
  */
-// void inputStrings(int histogram[])
-// {
-// 	// TODO: This code does not work; why?
-// 	char buf[MAXSTRLEN] = "";
+void inputStrings(int histogram[])
+{
+	char buf[MAXSTRLEN] = "";
 
-// 	printf("Enter strings (# to stop):\n");
-// 	while (strcmp(buf, "#\n") != 0)
-// 	{
-// 		// Get the string input by the user
-// 		fgets(buf, MAXSTRLEN, stdin);
+	printf("Enter strings (# to stop):\n");
+	while (strcmp(buf, "#\n") != 0)
+	{
+		// Get the string input by the user
+		fgets(buf, MAXSTRLEN, stdin);
 
-// 		printf("About to move on \n");
-
-// 		printSimpleHistogram(histogram, 26);
-
-// 		// Increment letters in histogram
-// 		incrementHistogram(buf, histogram, ALPHABET_SIZE);
-// 		printf("back from incrementHistogram\n");
-// 		buf[5] = '\0';
-// 		printf("buf is: %s\n", buf);
-// 	}
-// 	printf("back\n");
-// }
+		// Increment letters in histogram
+		incrementHistogram(buf, histogram, ALPHABET_SIZE);
+	}
+}
 
 /**
  * @brief Main function
@@ -67,24 +58,7 @@ int main(int argc, char *argv[])
 		}
 		else if (opt == 3)
 		{
-			// inputStrings(histogram);
-
-			printf("Enter strings (# to stop):\n");
-			char buf[MAXSTRLEN];
-			int notdone = 1;
-			while (notdone == 1)
-			{
-				// Get the string input by the user
-				fgets(buf, MAXSTRLEN, stdin);
-				if (strcmp(buf, "#\n") == 0)
-				{
-					notdone = 0;
-					break;
-				}
-
-				// Increment letters in histogram
-				incrementHistogram(buf, histogram, ALPHABET_SIZE);
-			}
+			inputStrings(histogram);
 		}
 		else if (opt == 4)
 		{

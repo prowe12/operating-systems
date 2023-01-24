@@ -10,7 +10,6 @@
 
 int main(void)
 {
-
     printf("Testing started\n");
 
     // Test of initializing the histogram
