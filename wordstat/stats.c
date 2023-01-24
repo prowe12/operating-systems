@@ -87,9 +87,32 @@ void printFrequencies(int hist[])
         j = iconsonant[i];
         nconsonant += hist[j];
     }
+
+    if ((nvowel < 0) || (nconsonant < 0))
+    {
+        // TODO: throw an error here
+        printf("Number of vowels and consonants must be >= 0\n");
+    }
     int ntotal = nvowel + nconsonant;
-    float vowelpc = nvowel / (float)ntotal * 100;
-    float consonantpc = nconsonant / (float)ntotal * 100;
+
+    // Get the percentages. If ntotal = 0, avoid nan
+    float vowelpc;
+    float consonantpc;
+    if (ntotal == 0)
+    {
+        vowelpc = 0.;
+        consonantpc = 0.;
+    }
+    else if (ntotal > 0)
+    {
+        vowelpc = nvowel / (float)ntotal * 100;
+        consonantpc = nconsonant / (float)ntotal * 100;
+    }
+    else
+    {
+        // TODO: throw an error here
+        printf("Error: ntotal should not be < 0!");
+    }
     printf("\nVowels = %d (%2.2f%%), Consonants = %d (%2.2f%%), Total= %d\n\n", nvowel, vowelpc, nconsonant, consonantpc, ntotal);
 }
 
