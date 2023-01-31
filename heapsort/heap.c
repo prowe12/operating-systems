@@ -20,8 +20,6 @@
  */
 void heapSort(Employee *A, int n)
 {
-	// int m = n;
-
 	// BuildHeap on the heap
 	buildHeap(A, n);
 
@@ -31,17 +29,10 @@ void heapSort(Employee *A, int n)
 	// 3) Heapify the elements from A[0] up to A[n-1] (leaving the newly sorted element alone)
 	while (n > 0)
 	{
-		// printf("heapsort, n = %d:\n", n);
-		// printList(A, m);
 		swap(&A[n - 1], &A[0]);
 		n--;
-		// printf("Before buildHeap, with n=%d: ", n);
-		// printList(A, m);
 		buildHeap(A, n);
-		// printf("After buildHeap: ");
-		// printList(A, m);
 	}
-	// printList(A, m);
 }
 
 /**
@@ -54,14 +45,10 @@ void heapSort(Employee *A, int n)
  */
 void buildHeap(Employee *A, int n)
 {
-	// printf("In buildHeap\n");
 	// Heapify() every element from A[n/2] down-to A[0]
 	for (int i = n / 2; i >= 0; i--)
 	{
 		heapify(A, i, n);
-
-		// printf("buildheap: %d:\n", i);
-		// printList(A, n);
 	}
 }
 
@@ -87,15 +74,11 @@ void heapify(Employee *A, int i, int n)
 
 	if ((i >= n) || (ileft >= n))
 	{
-		// printf("Out of range: %d,%d,%d not < %d\n", i, ileft, iright, n);
 		return;
 	}
 
-	// printf("i, ileft, iright, n: %d,%d,%d,%d\n", i, ileft, iright, n);
 	if ((i < n) && (ileft < n) && (iright < n))
 	{
-		// printf("Still in range: %d,%d,%d < %d\n", i, ileft, iright, n);
-
 		// Determine which child has a smaller salary.
 		if (A[ileft].salary <= A[iright].salary)
 		{
@@ -105,25 +88,17 @@ void heapify(Employee *A, int i, int n)
 		{
 			smaller = iright;
 		}
-		// printf("A[ileft].salary %d\n", A[ileft].salary);
-		// printf("A[iright].salary %d\n", A[iright].salary);
-		// printf("the smaller is %d\n", smaller);
 	}
 	else if ((i < n) && (ileft < n))
 	{
 		smaller = ileft;
-		// printf("A[iright] does not exist and A[ileft].salary %d\n", A[ileft].salary);
 	}
 	else if ((i < n) && (iright < n))
 	{
-		// printf("A[ileft].salary %d\n", A[ileft].salary);
-		// printf("A[iright].salary %d\n", A[iright].salary);
 		printf("Error: We should not have iright filled in if ileft is not!\n");
 	}
 	else
 	{
-		// printf("A[ileft].salary: %d\n", A[ileft].salary);
-		// printf("A[iright].salary: %d\n", A[iright].salary);
 		printf("Error: left and right children not as expected!\n");
 	}
 
@@ -134,8 +109,6 @@ void heapify(Employee *A, int i, int n)
 		// Swap
 		swap(&A[i], &A[smaller]);
 
-		// printf("Parent salary is now < child salary: %d < %d\n", A[i].salary, A[smaller].salary);
-		// printf("Recurse: i = %d\n", smaller);
 		heapify(A, smaller, n);
 	}
 }

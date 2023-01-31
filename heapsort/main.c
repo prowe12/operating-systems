@@ -7,25 +7,6 @@
 // TODO: change this?
 #define MAXSTRLEN 128
 
-/**
- * Get strings from user and increment histogram
- * @param  The starting histogram (counts per letter)
- */
-// void inputStrings(int histogram[])
-// {
-// 	char buf[MAXSTRLEN] = "";
-
-// 	printf("Enter strings (# to stop):\n");
-// 	while (strcmp(buf, "#\n") != 0)
-// 	{
-// 		// Get the string input by the user
-// 		fgets(buf, MAXSTRLEN, stdin);
-
-// 		// Increment letters in histogram
-// 		incrementHistogram(buf, histogram, ALPHABET_SIZE);
-// 	}
-// }
-
 int main(int argc, char *argv[])
 {
 

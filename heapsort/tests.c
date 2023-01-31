@@ -119,13 +119,7 @@ void testSwap()
     Employee emp[maxEmp];
     get10employees(emp);
     // Run: swap the first two
-    // printf("Before swap:\n");
-    // printf("emp0: %s, %d\n", emp[0].name, emp[0].salary);
-    // printf("emp1: %s, %d\n", emp[1].name, emp[1].salary);
     swap(&emp[0], &emp[1]);
-    // printf("After swap: \n");
-    // printf("emp0: %s, %d\n", emp[0].name, emp[0].salary);
-    // printf("emp1: %s, %d\n", emp[1].name, emp[1].salary);
     assert(strcmp(emp[1].name, "Joe Bob") == 0);
     assert(strcmp(emp[0].name, "Ada Lovelace") == 0);
     assert(emp[1].salary == 40);
@@ -335,14 +329,8 @@ void testHeapSortWith3b()
     Employee emp[maxEmp];
     int numEmp = get3employeesb(emp);
 
-    // printf("Before:\n");
-    // printList(emp, numEmp);
-
     // Run
     heapSort(emp, numEmp);
-
-    // printf("After:\n");
-    // printList(emp, numEmp);
 
     // Assert
     assert(emp[0].salary == 3);
@@ -383,11 +371,7 @@ void testHeapSort()
 int main(int argc, char *argv[])
 {
     printf("\nPerforming tests\n");
-    // TODO: fix
-    // testHeapSortWith3b();
 
-    // TESTS:
-    // TODO: fix
     testSwap();
     testHeapify();
     testBuildHeap();
