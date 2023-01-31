@@ -4,6 +4,42 @@
 #include "employee.h"
 #include "heap.h"
 
+int getDavidsExample(Employee *emp)
+{
+    int i = 0;
+    strcpy(emp[i].name, "David");
+    emp[i].salary = 60000;
+    i = 1;
+    strcpy(emp[i].name, "Gabe");
+    emp[i].salary = 75000;
+    i = 2;
+    strcpy(emp[i].name, "Katie");
+    emp[i].salary = 92000;
+    i = 3;
+    strcpy(emp[i].name, "Gabe");
+    emp[i].salary = 40000;
+    i = 4;
+    strcpy(emp[i].name, "Joan");
+    emp[i].salary = 86000;
+
+    return i + 1;
+}
+
+int get3employeesb(Employee *emp)
+{
+    int i = 0;
+    strcpy(emp[i].name, "a");
+    emp[i].salary = 1;
+    i = 1;
+    strcpy(emp[i].name, "b");
+    emp[i].salary = 2;
+    i = 2;
+    strcpy(emp[i].name, "c");
+    emp[i].salary = 3;
+
+    return i + 1;
+}
+
 int get3employees(Employee *emp)
 {
     int i = 0;
@@ -142,6 +178,31 @@ void testHeapifyWith3()
     return;
 }
 
+void testHeapifyWith3b()
+{
+    // Setup: Create a list of employees
+    int maxEmp = 20;
+    Employee emp[maxEmp];
+    int numEmp = get3employeesb(emp);
+
+    // Run
+    heapify(emp, 0, numEmp);
+    // for (int count = 0; count < numEmp; count++)
+    // {
+    // 	printf("emp[count].salary: %d\n", emp[count].salary);
+    // }
+
+    // Assert
+    assert(emp[0].salary == 1);
+    assert(emp[1].salary == 2);
+    assert(emp[2].salary == 3);
+    assert(strcmp(emp[0].name, "a") == 0);
+    assert(strcmp(emp[1].name, "b") == 0);
+    assert(strcmp(emp[2].name, "c") == 0);
+
+    return;
+}
+
 void testHeapifyWith10()
 {
     // Setup: Create a list of employees
@@ -189,16 +250,14 @@ void testHeapifyWith10()
 void testHeapify()
 {
     testHeapifyWith3();
+    testHeapifyWith3b();
     testHeapifyWith10();
     testHeapifyWith0();
     printf("Test of heapify: passed\n");
     return;
 }
 
-/**
- * Test BuildHeap(Employee *A, int n)
- */
-void testBuildHeap()
+void testBuildHeapWith10()
 {
     // Setup: Create a list of employees
     int maxEmp = 20;
@@ -220,12 +279,78 @@ void testBuildHeap()
     assert(emp[8].salary == 30);
     assert(emp[9].salary == 200);
 
-    printf("Test of buildHeap: passed\n");
+    return;
+}
+
+void testBuildHeapWith3b()
+{
+    // Setup: Create a list of employees
+    int maxEmp = 20;
+    Employee emp[maxEmp];
+    int numEmp = get3employeesb(emp);
+
+    // Run
+    buildHeap(emp, numEmp);
+
+    // Assert
+    assert(emp[0].salary == 1);
+    assert(emp[1].salary == 2);
+    assert(emp[2].salary == 3);
 
     return;
 }
 
-void testHeapSort()
+/**
+ * Test BuildHeap(Employee *A, int n)
+ */
+void testBuildHeap()
+{
+    testBuildHeapWith10();
+    testBuildHeapWith3b();
+    printf("Test of buildHeap: passed\n");
+}
+
+void testHeapSortWithDavidsExample()
+{
+    // Setup: Create a list of employees
+    int maxEmp = 20;
+    Employee emp[maxEmp];
+    int numEmp = getDavidsExample(emp);
+
+    // Run
+    heapSort(emp, numEmp);
+
+    // Assert
+    assert(emp[0].salary == 92000);
+    assert(emp[1].salary == 86000);
+    assert(emp[2].salary == 75000);
+    assert(emp[3].salary == 60000);
+    assert(emp[4].salary == 40000);
+}
+
+void testHeapSortWith3b()
+{
+    // Setup: Create a list of employees
+    int maxEmp = 20;
+    Employee emp[maxEmp];
+    int numEmp = get3employeesb(emp);
+
+    // printf("Before:\n");
+    // printList(emp, numEmp);
+
+    // Run
+    heapSort(emp, numEmp);
+
+    // printf("After:\n");
+    // printList(emp, numEmp);
+
+    // Assert
+    assert(emp[0].salary == 3);
+    assert(emp[1].salary == 2);
+    assert(emp[2].salary == 1);
+}
+
+void testHeapSortWith10()
 {
     // Setup: Create a list of employees
     int maxEmp = 20;
@@ -246,16 +371,23 @@ void testHeapSort()
     assert(emp[2].salary == 120);
     assert(emp[1].salary == 200);
     assert(emp[0].salary == 400);
+}
 
+void testHeapSort()
+{
+    testHeapSortWith3b();
+    testHeapSortWith10();
     printf("Test of heapSort: passed\n");
 }
 
 int main(int argc, char *argv[])
 {
-    // TODO
     printf("\nPerforming tests\n");
+    // TODO: fix
+    // testHeapSortWith3b();
 
     // TESTS:
+    // TODO: fix
     testSwap();
     testHeapify();
     testBuildHeap();

@@ -3,6 +3,9 @@
  *
  *  Created on: Jan. 30, 2023
  *      Author: Penny Rowe
+ *
+ * Note: make with:
+ *   $ make --file MakeTests
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,11 +31,15 @@ void heapSort(Employee *A, int n)
 	// 3) Heapify the elements from A[0] up to A[n-1] (leaving the newly sorted element alone)
 	while (n > 0)
 	{
-		// printf("%d:\n", n);
-		// printList(A, n);
+		// printf("heapsort, n = %d:\n", n);
+		// printList(A, m);
 		swap(&A[n - 1], &A[0]);
 		n--;
-		buildHeap(A, n - 1);
+		// printf("Before buildHeap, with n=%d: ", n);
+		// printList(A, m);
+		buildHeap(A, n);
+		// printf("After buildHeap: ");
+		// printList(A, m);
 	}
 	// printList(A, m);
 }
@@ -52,7 +59,8 @@ void buildHeap(Employee *A, int n)
 	for (int i = n / 2; i >= 0; i--)
 	{
 		heapify(A, i, n);
-		// printf("%d:\n", i);
+
+		// printf("buildheap: %d:\n", i);
 		// printList(A, n);
 	}
 }
@@ -125,9 +133,6 @@ void heapify(Employee *A, int i, int n)
 	{
 		// Swap
 		swap(&A[i], &A[smaller]);
-		// tmp = A[i].salary;
-		// A[i].salary = A[smaller].salary;
-		// A[smaller].salary = tmp;
 
 		// printf("Parent salary is now < child salary: %d < %d\n", A[i].salary, A[smaller].salary);
 		// printf("Recurse: i = %d\n", smaller);

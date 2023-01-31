@@ -1,9 +1,9 @@
 
-#all: tests.c heap.h employee.h heap.o
-#	gcc -Wall -g -o tests main.c heap.o
-#
-all: main.c heap.h employee.h heap.o
-	gcc -Wall -g -o heapsort main.c heap.o
+all: tests.c heap.h employee.h heap.o
+	gcc -Wall -g -o tests tests.c heap.o
+
+# all: main.c heap.h employee.h heap.o
+# 	gcc -Wall -g -o heapsort main.c heap.o
 
 # all: heapsort #tests
 
