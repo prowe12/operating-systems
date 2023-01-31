@@ -21,16 +21,16 @@ void heapSort(Employee *A, int n)
 	// BuildHeap on the heap
 	buildHeap(A, n);
 
-	// TODO - while n > 0:
+	// Loop over n and:
+	// 1) swap A[n-1] with A[0], since A[0] is the smallest number.
+	// 2) A[n-1] now sorted in place, so decrement n
+	// 3) Heapify the elements from A[0] up to A[n-1] (leaving the newly sorted element alone)
 	while (n > 0)
 	{
 		printf("%d:\n", n);
 		printList(A, n);
-		// TODO - swap A[n-1] with A[0], since A[0] is the smallest number.
 		swap(&A[n - 1], &A[0]);
-		// A[n-1] now sorted in place, so decrement n
 		n--;
-		// TODO - Heapify the elements from A[0] up to A[n-1] (which leaves the newly sorted element alone)
 		buildHeap(A, n - 1);
 	}
 	printList(A, m);
