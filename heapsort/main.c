@@ -6,13 +6,13 @@
 
 // TODO: change this?
 #define MAXSTRLEN 128
+#define MAX_EMPLOYEES 10;
 
 int main(int argc, char *argv[])
 {
 
 	// TODO: What should it do if all salaries are same?
 
-	printf("In main\n");
 	int salary;
 
 	// TODO max employees?
@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 
 	char buf[MAXSTRLEN] = "";
 	int i = 0;
+	int notdone = 1;
 	while (strcmp(buf, "#") != 0)
 	{
 		// Get the string input by the user and strip off the newline
