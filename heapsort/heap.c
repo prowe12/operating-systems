@@ -17,7 +17,8 @@
  */
 void heapSort(Employee *A, int n)
 {
-	int m = n;
+	// int m = n;
+
 	// BuildHeap on the heap
 	buildHeap(A, n);
 
@@ -27,13 +28,13 @@ void heapSort(Employee *A, int n)
 	// 3) Heapify the elements from A[0] up to A[n-1] (leaving the newly sorted element alone)
 	while (n > 0)
 	{
-		printf("%d:\n", n);
-		printList(A, n);
+		// printf("%d:\n", n);
+		// printList(A, n);
 		swap(&A[n - 1], &A[0]);
 		n--;
 		buildHeap(A, n - 1);
 	}
-	printList(A, m);
+	// printList(A, m);
 }
 
 /**

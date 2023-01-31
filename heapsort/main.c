@@ -251,15 +251,5 @@ int main(int argc, char *argv[])
 	// TODO
 	printf("In main\n");
 
-	// TESTS:
-	testSwap();
-	testHeapify();
-	testPrintList();
-	testBuildHeap();
-	testHeapSort();
-
-	// TODO: test void heapSort(Employee *A, int n)
-	// TODO: test void reverse( Employee *A, int start, int end);
-
 	return 0;
 }
