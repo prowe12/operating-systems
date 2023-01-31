@@ -1,3 +1,13 @@
+/*
+ * tests.c
+ *
+ *  Created on: Jan. 30, 2023
+ *      Author: Penny Rowe
+ *
+ * Note: make with:
+ *   $ make --file MakeTests
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
