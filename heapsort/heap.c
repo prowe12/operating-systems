@@ -1,8 +1,8 @@
 /*
  * heapsort.c
  *
- *  Created on: Jul 1, 2013
- *      Author:
+ *  Created on: Jan. 30, 2023
+ *      Author: Penny Rowe
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,12 +17,23 @@
  */
 void heapSort(Employee *A, int n)
 {
-	// TODO - BuildHeap on the heap
+	int m = n;
+	// BuildHeap on the heap
+	buildHeap(A, n);
 
 	// TODO - while n > 0:
-	// TODO - swap A[n-1] with A[0], since A[0] is the smallest number.
-	// TODO - A[n-1] now sorted in place, so decrement n
-	// TODO - Heapify the elements from A[0] up to A[n-1] (which leaves the newly sorted element alone)
+	while (n > 0)
+	{
+		printf("%d:\n", n);
+		printList(A, n);
+		// TODO - swap A[n-1] with A[0], since A[0] is the smallest number.
+		swap(&A[n - 1], &A[0]);
+		// A[n-1] now sorted in place, so decrement n
+		n--;
+		// TODO - Heapify the elements from A[0] up to A[n-1] (which leaves the newly sorted element alone)
+		buildHeap(A, n - 1);
+	}
+	printList(A, m);
 }
 
 /**
@@ -35,7 +46,14 @@ void heapSort(Employee *A, int n)
  */
 void buildHeap(Employee *A, int n)
 {
-	// TODO - heapify() every element from A[n/2] down-to A[0]
+	// printf("In buildHeap\n");
+	// Heapify() every element from A[n/2] down-to A[0]
+	for (int i = n / 2; i >= 0; i--)
+	{
+		heapify(A, i, n);
+		// printf("%d:\n", i);
+		// printList(A, n);
+	}
 }
 
 /**
@@ -48,15 +66,72 @@ void buildHeap(Employee *A, int n)
  */
 void heapify(Employee *A, int i, int n)
 {
-	// TODO - get index of left child of element i
-	// TODO - get index of right child of element i
 
-	// TODO - determine which child has a smaller salary. We'll call the index of this
-	//		element: "smaller"
+	// Get index of left and right child of element i
+	int ileft = 2 * (i + 1) - 1;
+	int iright = 2 * (i + 1);
 
-	// TODO - recursively check if the salary at A[i] > the salary at A[smaller]. If it is, swap the two.
-	//			Then recursively heapify A[smaller].
-	// TODO - Continue recursion as long as i is within range AND either right_child and left_child are still within range.
+	// Continue recursion as long as i is within range AND either left_child
+	// or right_child are still within range. I think we can just check left child,
+	// because it always comes first
+	int smaller;
+
+	if ((i >= n) || (ileft >= n))
+	{
+		// printf("Out of range: %d,%d,%d not < %d\n", i, ileft, iright, n);
+		return;
+	}
+
+	// printf("i, ileft, iright, n: %d,%d,%d,%d\n", i, ileft, iright, n);
+	if ((i < n) && (ileft < n) && (iright < n))
+	{
+		// printf("Still in range: %d,%d,%d < %d\n", i, ileft, iright, n);
+
+		// Determine which child has a smaller salary.
+		if (A[ileft].salary <= A[iright].salary)
+		{
+			smaller = ileft;
+		}
+		else
+		{
+			smaller = iright;
+		}
+		// printf("A[ileft].salary %d\n", A[ileft].salary);
+		// printf("A[iright].salary %d\n", A[iright].salary);
+		// printf("the smaller is %d\n", smaller);
+	}
+	else if ((i < n) && (ileft < n))
+	{
+		smaller = ileft;
+		// printf("A[iright] does not exist and A[ileft].salary %d\n", A[ileft].salary);
+	}
+	else if ((i < n) && (iright < n))
+	{
+		// printf("A[ileft].salary %d\n", A[ileft].salary);
+		// printf("A[iright].salary %d\n", A[iright].salary);
+		printf("Error: We should not have iright filled in if ileft is not!\n");
+	}
+	else
+	{
+		// printf("A[ileft].salary: %d\n", A[ileft].salary);
+		// printf("A[iright].salary: %d\n", A[iright].salary);
+		printf("Error: left and right children not as expected!\n");
+	}
+
+	// Recursively check if the salary at A[i] > the salary at A[smaller].
+	// If it is, swap the two. Then recursively heapify A[smaller].
+	if (A[i].salary > A[smaller].salary)
+	{
+		// Swap
+		swap(&A[i], &A[smaller]);
+		// tmp = A[i].salary;
+		// A[i].salary = A[smaller].salary;
+		// A[smaller].salary = tmp;
+
+		// printf("Parent salary is now < child salary: %d < %d\n", A[i].salary, A[smaller].salary);
+		// printf("Recurse: i = %d\n", smaller);
+		heapify(A, smaller, n);
+	}
 }
 
 /**
@@ -67,6 +142,9 @@ void heapify(Employee *A, int i, int n)
 void swap(Employee *e1, Employee *e2)
 {
 	// TODO
+	Employee tmp = *e1;
+	*e1 = *e2;
+	*e2 = tmp;
 }
 
 /**
@@ -76,5 +154,14 @@ void swap(Employee *e1, Employee *e2)
  */
 void printList(Employee *A, int n)
 {
-	// TODO
+	int i;
+	for (i = 0; i < n - 1; i++)
+	{
+		printf("[Id=%s ", A[i].name);
+		printf("sal=%d], ", A[i].salary);
+	}
+	// The last one ends in return instead of comma
+	printf("[Id=%s ", A[i].name);
+	printf("sal=%d]\n", A[i].salary);
+	printf("\n");
 }
