@@ -4,21 +4,16 @@
 #include "employee.h"
 #include "heap.h"
 
-// TODO: change this?
 #define MAXSTRLEN 128
 #define MAX_EMPLOYEES 10
 
 int main(int argc, char *argv[])
 {
 
-	// TODO: What should it do if all salaries are same?
-
 	int salary;
 	char qcterm; // Will use for quality-controlling user integer input
 
-	// TODO max employees?
-	int maxEmp = 20;
-	Employee emp[maxEmp];
+	Employee emp[MAX_EMPLOYEES];
 
 	// Accept user input of names and salaries
 	printf("\nEnter %d names and salaries (enter # to quit early): \n", MAX_EMPLOYEES);

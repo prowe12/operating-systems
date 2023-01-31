@@ -118,7 +118,6 @@ void heapify(Employee *A, int i, int n)
  */
 void swap(Employee *e1, Employee *e2)
 {
-	// TODO
 	Employee tmp = *e1;
 	*e1 = *e2;
 	*e2 = tmp;
