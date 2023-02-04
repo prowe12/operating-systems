@@ -1,8 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "stack.h"
 #include "ls2.h"
+
+// opendir(), readdir(), closedir().
 
 /**
  * Main function
@@ -26,7 +29,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	// Get the path and make sure it exists
+	// Get the path
 	path = argv[1];
 	// TODO: remove following
 	printf("You have chosen to look into path: %s\n", path);
