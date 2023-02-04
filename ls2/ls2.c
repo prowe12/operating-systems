@@ -6,5 +6,4 @@
 #include <unistd.h>
 #include "ls2.h"
 
-
 // TODO: function definitions here for ls2
