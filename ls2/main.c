@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "stack.h"
 #include "ls2.h"
 
@@ -9,22 +10,49 @@
  */
 int main(int argc, char *argv[])
 {
+	char *path;
+	int getall = 1; // Boolean - whether to look for file in each dir
+	// int i;
+
 	// stack stores the lines to print out
 	stack_t *s = initstack();
 
-	// TODO: Parse the inputs
+	// QC number of inputs
+	char *welcome = "Usage: ./ls2 <path> [optional-file]";
+	if ((argc < 2) || (argc > 3))
+	{
+		printf("%s\n", welcome);
+		return 0;
+	}
 
-	// TODO: Get the contents of path and put it in the stack
+	// Get the path and make sure it exists
+	path = argv[1];
+	// TODO: remove following
+	printf("You have chosen to look into path: %s\n", path);
 
-	// TODO: Loop over the path contents and see what the file type is ('.', dir, file, link, etc)
-	// TODO: For every directory, repeat lines 17 - 20
+	// TODO QC: make sure the path exists
+	// TODO: remove following line
+	int pathexists = 1;
+	if (!pathexists)
+	{
+		printf("%s is not a directory path! Exiting ...\n", path);
+		return 0;
+	}
 
-	// TODO: Case 1: Only path entered
-
-	// TODO: Case 2: pattern also entered
-	push(s, "Hello1");
-	push(s, "Hello2");
-	push(s, "Hello3");
+	// TODO: if there are two inputs, get file to check for
+	if (argc == 2)
+	{
+		getall = 1;
+		printf("Get all filenames\n");
+		getDirs(s);
+	}
+	else if (argc == 3)
+	{
+		char *fname = argv[1];
+		getall = 0;
+		printf("Get only file: %s\n", fname);
+		getDirsWithFile(s, fname);
+	}
 
 	// print stack
 	printstack(s);
