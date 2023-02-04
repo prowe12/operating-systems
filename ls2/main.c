@@ -18,10 +18,11 @@ int main(int argc, char *argv[])
 	stack_t *s = initstack();
 
 	// QC number of inputs
-	char *welcome = "Usage: ./ls2 <path> [optional-file]";
+	char *howto = "Usage: ./ls2 <path> [optional-file]";
 	if ((argc < 2) || (argc > 3))
 	{
-		printf("%s\n", welcome);
+		printf("%s\n", howto);
+		freestack(s);
 		return 0;
 	}
 
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
 	if (!pathexists)
 	{
 		printf("%s is not a directory path! Exiting ...\n", path);
+		freestack(s);
 		return 0;
 	}
 
