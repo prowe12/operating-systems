@@ -111,7 +111,7 @@ void pushToStack(stack_t *s, char *topdir, int depth)
             off_t filesize = buf.st_size;
             // printf("%s size: %ld\n", path->d_name, filesize);
             char filesizestr[50];
-            snprintf(filesizestr, 50, "%u", filesize);
+            snprintf(filesizestr, 50, "%lu", filesize);
             // printf("%s size: %s\n", path->d_name, filesizestr);
 
             char *stringForStack = path->d_name;
