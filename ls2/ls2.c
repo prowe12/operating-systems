@@ -107,8 +107,17 @@ void pushToStack(stack_t *s, char *topdir, int depth)
         else if (S_ISREG(buf.st_mode))
         {
             // printf("status=%d, path=%s, regular file, ADD\n", pathstat, path->d_name);
+            // Get file size in bytes and convert to string
+            off_t filesize = buf.st_size;
+            // printf("%s size: %ld\n", path->d_name, filesize);
+            char filesizestr[50];
+            snprintf(filesizestr, 50, "%u", filesize);
+            // printf("%s size: %s\n", path->d_name, filesizestr);
+
             char *stringForStack = path->d_name;
-            strcat(stringForStack, " (x bytes)");
+            strcat(stringForStack, " (");
+            strcat(stringForStack, filesizestr);
+            strcat(stringForStack, " bytes)");
             push(s, stringForStack);
         }
         else if (S_ISDIR(buf.st_mode))
