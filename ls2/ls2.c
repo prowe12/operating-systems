@@ -72,7 +72,7 @@ int printCwd()
     return 0;
 }
 
-void pushToStack(stack_t *s, char *topdir, int depth)
+void pushToStack(stack_t *s, char *topdir, char **dirArray, int depth)
 {
     // 	st_mode, st_ino, st_dev, st_uid, st_gid, st_atime, st_ctime and st_mtime
     // printf("Is it a regular file?: %d\n", dum);
@@ -93,7 +93,7 @@ void pushToStack(stack_t *s, char *topdir, int depth)
     // When it gets to the end, it returns NULL.
     while ((path = readdir(dirStruct)) != NULL)
     {
-
+        printf("depth: %d\n", depth);
         // printf("%s: \n", topdir);
         // chdir(topdir);
         // printCwd();
@@ -133,7 +133,7 @@ void pushToStack(stack_t *s, char *topdir, int depth)
         else if (S_ISDIR(buf.st_mode))
         {
             // printf("status=%d, path=%s, directory, recurse\n", pathstat, path->d_name);
-            pushToStack(s, path->d_name, depth + 1);
+            pushToStack(s, path->d_name, dirArray, depth + 1, iarray + 1);
             char *stringForStack = path->d_name;
             strcat(stringForStack, "/ (directory)");
             // printf("back to directory %s\n", topdir);
