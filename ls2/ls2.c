@@ -1,3 +1,10 @@
+/*
+ * ls2.c
+ *
+ *  Created on: Feb. 4, 2023
+ *      Author: Penny Rowe
+ *
+ */
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,18 +13,85 @@
 #include <unistd.h>
 #include "ls2.h"
 
+// #include <unistd.h>
+#include <errno.h>
+
 // TODO: function definitions here for ls2
 
-// TODO: Get contents of path
-void getDirs(stack_t *s)
+/**
+ * From https://www.delftstack.com/howto/c/opendir-in-c/
+ */
+DIR *getdir(char *path)
 {
-    printf("In getDirs\n");
+    DIR *dirStruct;
+
+    errno = 0;
+
+    // opendir returns a DIR* structure or NULL if it encounters an error
+    if ((dirStruct = opendir(path)) == NULL)
+    {
+        switch (errno)
+        {
+        case EACCES:
+            printf("Permission denied for directory %s\n", path);
+            break;
+        case ENOTDIR:
+            printf("'%s' is not a directory\n", path);
+            break;
+        case ENOENT:
+            printf("Directory \"%s\" does not exist\n", path);
+            break;
+        }
+        free(dirStruct);
+        exit(EXIT_FAILURE);
+    }
+    return dirStruct;
+}
+
+void pushToStackForFile(stack_t *s, DIR *dirStruct, char *fname)
+{
     return;
 }
 
-void getDirsWithFile(stack_t *s, char *fname)
+void pushToStack(stack_t *s, char *topdir)
 {
-    printf("In getDirsWithFile\n");
+    // 	st_mode, st_ino, st_dev, st_uid, st_gid, st_atime, st_ctime and st_mtime
+    // printf("Is it a regular file?: %d\n", dum);
+
+    DIR *dirStruct = getdir(topdir);
+    errno = 0;
+    struct dirent *path;
+    struct stat buf;
+    int pathstat;
+
+    // We only have the relative paths, so we need to change into the top directory first.
+    chdir(topdir);
+
+    // readdir returns a pointer to dirStruct representing the next directory entry.
+    // When it gets to the end, it returns NULL.
+    while ((path = readdir(dirStruct)) != NULL)
+    {
+        printf("%s: ", path->d_name);
+
+        pathstat = lstat(path->d_name, &buf);
+        printf("status=%d", pathstat);
+
+        if ((pathstat != 0) || (strcmp(path->d_name, ".") == 0) || (strcmp(path->d_name, "..") == 0))
+        {
+            printf("\n");
+            continue;
+        }
+        else if ((S_ISREG(buf.st_mode)) || S_ISDIR(buf.st_mode))
+        {
+            printf(", Directory or Regular file, adding\n");
+            push(s, path->d_name);
+        }
+        else
+        {
+            printf("Error: unexpected value for status of %s", path->d_name);
+        }
+    }
+
     return;
 }
 

@@ -1,3 +1,10 @@
+/*
+ * stack.c
+ *
+ *  Created on: Feb. 4, 2023
+ *      Author: David Chiu
+ *
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include "stack.h"
