@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
     char *topdir;
     DIR *dirStruct;
-    topdir = "dumdir";
+    topdir = "dum1";
 
     struct dirent *path;
 
@@ -57,40 +57,61 @@ int main(int argc, char *argv[])
     // }
 
     // // This works too
-    char *stringForStack[100]; // pointer to character array
+    // char *stringForStack[100]; // pointer to character array
+    // dirStruct = opendir(topdir);
+    // while ((path = readdir(dirStruct)) != NULL)
+    // {
+    //     // path is a pointer to a struct
+    //     // path->d_name is a pointer to a character array?
+    //     *stringForStack = path->d_name;
+    //     push(s, *stringForStack);
+    // }
+
     dirStruct = opendir(topdir);
     while ((path = readdir(dirStruct)) != NULL)
     {
-        // path is a pointer to a struct
-        // path->d_name is a pointer to a character array?
-        *stringForStack = path->d_name;
-        push(s, *stringForStack);
+        int flen = strlen(path->d_name);
+        printf("file length: %d\n", flen);
+
+        char *mystr = (char *)malloc(strlen("    ") + flen + 1);
+        mystr[0] = '\0';
+        strcpy(mystr, "    ");
+        strcat(mystr, path->d_name);
+        push(s, mystr);
     }
+
+    // char *mystr = (char *)malloc(strlen("    ") + strlen(path->d_name) + 1);
+    // char *mystr = (char *)malloc(strlen("    ") + 4 + 1);
+    // mystr[0] = '\0';
+    // strcpy(mystr, "hello");
+    // push(s, mystr);
+    //  strcpy(mystr, "penny");
+    //  push(s, mystr);
 
     // Try to append spaces
-    dirStruct = opendir(topdir);
-    while ((path = readdir(dirStruct)) != NULL)
-    {
-        // char *dumstr = (char *)malloc(strlen("    ") + strlen(path->d_name) + 1);
-        // dumstr[0] = '\0';
+    // dirStruct = opendir(topdir);
+    // while ((path = readdir(dirStruct)) != NULL)
+    // {
+    //     // char *dumstr = (char *)malloc(strlen("    ") + strlen(path->d_name) + 1);
+    //     // dumstr[0] = '\0';
 
-        // strcpy(dumstr, "hello");
-        char dumstr = "hello";
-        // strcat(email, "@");    // append @
-        // strcat(email, domain); // append domain
-        // char *stringForStack[100];
-        // *stringForStack = path->d_name;
+    //     // strcpy(dumstr, "hello");
+    //     char dumstr = "hello";
+    //     // strcat(email, "@");    // append @
+    //     // strcat(email, domain); // append domain
+    //     // char *stringForStack[100];
+    //     // *stringForStack = path->d_name;
 
-        // char *mypointer = path->d_name;
-        // strcpy(*stringForStack, "  ");
-        // strcat(dumstr, stringForStack);
-        // printf("%s\n", *dumstr);
-        //*stringForStack = *dumstr;
-        //  char *p[100] = dumstr;
-        //  printf("%s\n", stringForStack);
-        push(s, dumstr);
-        free(dumstr);
-    }
+    //     // char *mypointer = path->d_name;
+    //     // strcpy(*stringForStack, "  ");
+    //     // strcat(dumstr, stringForStack);
+    //     // printf("%s\n", *dumstr);
+    //     //*stringForStack = *dumstr;
+    //     //  char *p[100] = dumstr;
+    //     //  printf("%s\n", stringForStack);
+    //     push(s, dumstr);
+    //     free(dumstr);
+    // }
 
     // print stack
     printf("\n\nPrinting stack:\n");

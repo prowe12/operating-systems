@@ -114,11 +114,21 @@ void pushToStack(stack_t *s, char *topdir, int depth)
             snprintf(filesizestr, 50, "%lu", filesize);
             // printf("%s size: %s\n", path->d_name, filesizestr);
 
-            char *stringForStack = path->d_name;
-            strcat(stringForStack, " (");
-            strcat(stringForStack, filesizestr);
-            strcat(stringForStack, " bytes)");
-            push(s, stringForStack);
+            int flen = strlen(path->d_name);
+            char *mystr = (char *)malloc(strlen("    ") + flen + 1);
+            mystr[0] = '\0';
+            for (int i = 0; i < depth; i++)
+            {
+                strcat(mystr, "    ");
+            }
+            strcat(mystr, path->d_name);
+            strcat(mystr, " (");
+            strcat(mystr, filesizestr);
+            strcat(mystr, " bytes)");
+
+            push(s, mystr);
+
+            // push(s, stringForStack);
         }
         else if (S_ISDIR(buf.st_mode))
         {
