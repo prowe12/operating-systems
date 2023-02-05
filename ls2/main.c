@@ -5,6 +5,9 @@
  *      Author: Penny Rowe
  *
  * Reminder: valgrind --leak-check=full ./ls2 dum2 file2a
+ * If object is a pointer to a struct, use ->
+ * If object is a struct, use .
+ *
  */
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,9 +25,6 @@ void quit(stack_t *s, char *msg)
 	printf("%s\n", msg);
 	exit(EXIT_FAILURE);
 }
-
-// If it is the pointer, use the ->
-// If it is the struct, use .
 
 /**
  * Main function
