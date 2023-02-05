@@ -23,6 +23,9 @@ void quit(stack_t *s, char *msg)
 	exit(EXIT_FAILURE);
 }
 
+// If it is the pointer, use the ->
+// If it is the struct, use .
+
 /**
  * Main function
  * Usage: ls2 <path> [exact-match-pattern]
@@ -31,7 +34,7 @@ int main(int argc, char *argv[])
 {
 	char *path;
 	int getall = 1; // Boolean - whether to look for file in each dir
-	// int i;
+	int i;
 
 	// stack stores the lines to print out
 	stack_t *s = initstack();
@@ -55,17 +58,24 @@ int main(int argc, char *argv[])
 	// TODO: if there are two inputs, get file to check for
 	if (argc == 2)
 	{
-		getall = 1;
-		printf("Get all filenames\n");
-		pushToStack(s, path);
+		// 	getall = 1;
+		// printf("Get all filenames\n");
+		pushToStack(s, path, 0);
 	}
 	else if (argc == 3)
 	{
 		char *fname = argv[2];
-		getall = 0;
-		printf("Get only file: %s\n", fname);
-		pushToStack(s, path); // fname
+		// 	getall = 0;
+		// printf("Get only file: %s\n", fname);
+		pushToStack(s, path, 0);
 	}
+
+	// Add the top directory int npath = strlen(path);
+	// strcat(path, "/ (directory)");
+	// push(s, path);
+	// printf("concat path: %s\n", path);
+	// path[npath + 1] = '\0';
+	// printf("original path: %s\n", path);
 
 	// print stack
 	printf("\n\nPrinting stack:\n");

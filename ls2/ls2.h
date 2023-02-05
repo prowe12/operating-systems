@@ -11,7 +11,8 @@
 void getDirs(stack_t *s);
 void getDirsWithFile(stack_t *s, char *fname);
 DIR *getdir(char *path);
-void pushToStack(stack_t *s, char *topdir);
+void pushToStack(stack_t *s, char *topdir, int depth);
 void pushToStackForFile(stack_t *s, DIR *dirStruct, char *fname);
+int printCwd();
 
 #endif

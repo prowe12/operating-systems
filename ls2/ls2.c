@@ -53,7 +53,26 @@ void pushToStackForFile(stack_t *s, DIR *dirStruct, char *fname)
     return;
 }
 
-void pushToStack(stack_t *s, char *topdir)
+#include <unistd.h>
+#include <stdio.h>
+#include <limits.h>
+
+int printCwd()
+{
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL)
+    {
+        printf("Current working dir: %s\n", cwd);
+    }
+    else
+    {
+        perror("getcwd() error");
+        return 1;
+    }
+    return 0;
+}
+
+void pushToStack(stack_t *s, char *topdir, int depth)
 {
     // 	st_mode, st_ino, st_dev, st_uid, st_gid, st_atime, st_ctime and st_mtime
     // printf("Is it a regular file?: %d\n", dum);
@@ -64,27 +83,44 @@ void pushToStack(stack_t *s, char *topdir)
     struct stat buf;
     int pathstat;
 
+    //*stringForStack = "    ";
+
     // We only have the relative paths, so we need to change into the top directory first.
+    // printf("%s: \n", topdir);
     chdir(topdir);
 
     // readdir returns a pointer to dirStruct representing the next directory entry.
     // When it gets to the end, it returns NULL.
     while ((path = readdir(dirStruct)) != NULL)
     {
-        printf("%s: ", path->d_name);
 
+        // printf("%s: \n", topdir);
+        // chdir(topdir);
+        // printCwd();
         pathstat = lstat(path->d_name, &buf);
-        printf("status=%d", pathstat);
 
         if ((pathstat != 0) || (strcmp(path->d_name, ".") == 0) || (strcmp(path->d_name, "..") == 0))
         {
-            printf("\n");
+            // printf("status=%d, path=%s, skip\n", pathstat, path->d_name);
             continue;
         }
-        else if ((S_ISREG(buf.st_mode)) || S_ISDIR(buf.st_mode))
+        else if (S_ISREG(buf.st_mode))
         {
-            printf(", Directory or Regular file, adding\n");
-            push(s, path->d_name);
+            // printf("status=%d, path=%s, regular file, ADD\n", pathstat, path->d_name);
+            char *stringForStack = path->d_name;
+            strcat(stringForStack, " (x bytes)");
+            push(s, stringForStack);
+        }
+        else if (S_ISDIR(buf.st_mode))
+        {
+            // printf("status=%d, path=%s, directory, recurse\n", pathstat, path->d_name);
+            pushToStack(s, path->d_name, depth + 1);
+            char *stringForStack = path->d_name;
+            strcat(stringForStack, "/ (directory)");
+            // printf("back to directory %s\n", topdir);
+            chdir("../");
+            // printf("status=%d, path=%s, ADD\n", pathstat, path->d_name);
+            push(s, stringForStack);
         }
         else
         {
