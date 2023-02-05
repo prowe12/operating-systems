@@ -4,9 +4,10 @@
  *  Created on: Feb. 4, 2023
  *      Author: Penny Rowe
  *
- * Reminder: valgrind --leak-check=full ./ls2 dum2 file2a
- * If object is a pointer to a struct, use ->
- * If object is a struct, use .
+ * Reminders:
+ *   valgrind --leak-check=full ./ls2 dum2 file2a
+ *   If object is a pointer to a struct, use ->
+ *   If object is a struct, use .
  *
  */
 #include <stdlib.h>
@@ -58,13 +59,13 @@ int main(int argc, char *argv[])
 	// Should we traverse through first to get the sizes?
 	// For now, just assume 100 characters x 100 strings
 	int nstrings = 100; // Just allow 100 for now
-	int nchars = 100;
 	char **dirArray = (char **)malloc(sizeof(char *) * nstrings);
+	// int nchars = 100;
 	// iterate through each row and malloc a size N array of ints
-	for (int i = 0; i < nstrings; i++)
-	{
-		dirArray[i] = (char *)malloc(sizeof(char) * nchars);
-	}
+	// for (int i = 0; i < nstrings; i++)
+	// {
+	// 	dirArray[i] = (char *)malloc(sizeof(char) * nchars);
+	// }
 
 	// TODO: remove following
 	printf("You have chosen to look into path: %s\n", path);
@@ -74,14 +75,14 @@ int main(int argc, char *argv[])
 	{
 		// 	getall = 1;
 		// printf("Get all filenames\n");
-		pushToStack(s, path, dirArray, 0);
+		pushToStack(s, path, dirArray, 0, 0);
 	}
 	else if (argc == 3)
 	{
 		// char *fname = argv[2];
 		// 	getall = 0;
 		// printf("Get only file: %s\n", fname);
-		pushToStack(s, path, dirArray, 0);
+		pushToStack(s, path, dirArray, 0, 0);
 	}
 
 	// Add the top directory int npath = strlen(path);

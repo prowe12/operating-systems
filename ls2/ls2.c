@@ -72,7 +72,7 @@ int printCwd()
     return 0;
 }
 
-void pushToStack(stack_t *s, char *topdir, char **dirArray, int depth)
+int pushToStack(stack_t *s, char *topdir, char **dirArray, int depth, int iarray)
 {
     // 	st_mode, st_ino, st_dev, st_uid, st_gid, st_atime, st_ctime and st_mtime
     // printf("Is it a regular file?: %d\n", dum);
@@ -93,7 +93,6 @@ void pushToStack(stack_t *s, char *topdir, char **dirArray, int depth)
     // When it gets to the end, it returns NULL.
     while ((path = readdir(dirStruct)) != NULL)
     {
-        printf("depth: %d\n", depth);
         // printf("%s: \n", topdir);
         // chdir(topdir);
         // printCwd();
@@ -110,36 +109,52 @@ void pushToStack(stack_t *s, char *topdir, char **dirArray, int depth)
             // Get file size in bytes and convert to string
             off_t filesize = buf.st_size;
             // printf("%s size: %ld\n", path->d_name, filesize);
+            // TODO: malloc this?
             char filesizestr[50];
             snprintf(filesizestr, 50, "%lu", filesize);
             // printf("%s size: %s\n", path->d_name, filesizestr);
 
-            int flen = strlen(path->d_name);
-            char *mystr = (char *)malloc(strlen("    ") + flen + 1);
-            mystr[0] = '\0';
-            for (int i = 0; i < depth; i++)
-            {
-                strcat(mystr, "    ");
-            }
-            strcat(mystr, path->d_name);
-            strcat(mystr, " (");
-            strcat(mystr, filesizestr);
-            strcat(mystr, " bytes)");
+            int flen = strlen(path->d_name) + strlen("    ") + 1;
 
-            push(s, mystr);
+            // Set this element of the array
+            dirArray[iarray] = (char *)malloc(sizeof(char) * flen);
+            dirArray[iarray][0] = '\0';
+            strcat(dirArray[iarray], "    ");
+            strcat(dirArray[iarray], path->d_name);
+            strcat(dirArray[iarray], " (");
+            strcat(dirArray[iarray], filesizestr);
+            strcat(dirArray[iarray], " bytes)");
+
+            // char *mystr = dirArray[iarray]; // (char *)malloc(flen);
+            // mystr[0] = '\0';
+            // for (int i = 0; i < depth; i++)
+            // {
+            //     strcat(mystr, "    ");
+            // }
+            // strcat(mystr, path->d_name);
+            // strcat(mystr, " (");
+            // strcat(mystr, filesizestr);
+            // strcat(mystr, " bytes)");
+
+            printf("iarray: %d\n", iarray);
+            push(s, dirArray[iarray]);
+            iarray += 1;
 
             // push(s, stringForStack);
         }
         else if (S_ISDIR(buf.st_mode))
         {
             // printf("status=%d, path=%s, directory, recurse\n", pathstat, path->d_name);
-            pushToStack(s, path->d_name, dirArray, depth + 1, iarray + 1);
+            iarray = pushToStack(s, path->d_name, dirArray, depth + 1, iarray);
             char *stringForStack = path->d_name;
             strcat(stringForStack, "/ (directory)");
             // printf("back to directory %s\n", topdir);
             chdir("../");
             // printf("status=%d, path=%s, ADD\n", pathstat, path->d_name);
+
+            printf("iarray: %d\n", iarray);
             push(s, stringForStack);
+            iarray += 1;
         }
         else
         {
@@ -147,7 +162,7 @@ void pushToStack(stack_t *s, char *topdir, char **dirArray, int depth)
         }
     }
 
-    return;
+    return iarray;
 }
 
 // paths = ls(path);
