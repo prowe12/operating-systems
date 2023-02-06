@@ -70,19 +70,58 @@ int main(int argc, char *argv[])
 	// TODO: remove following
 	printf("You have chosen to look into path: %s\n", path);
 
-	// TODO: if there are two inputs, get file to check for
-	if (argc == 2)
+	// Create the stack with the directory tree and put names into the array
+	pushToStack(s, path, dirArray, 0, 0);
+
+	// TODO: if there are three inputs, go through stack and remove
+	// elements that do not lead to the filename
+	if (argc == 3)
 	{
-		// 	getall = 1;
-		// printf("Get all filenames\n");
-		pushToStack(s, path, dirArray, 0, 0);
-	}
-	else if (argc == 3)
-	{
-		// char *fname = argv[2];
-		// 	getall = 0;
-		// printf("Get only file: %s\n", fname);
-		pushToStack(s, path, dirArray, 0, 0);
+		char *fname = argv[2];
+		printf("\nGet tree for file: %s\n", fname);
+
+		stacknode_t *current = s->top;
+		printf("%s\n", (char *)current->data);
+
+		while (pop(s) != NULL)
+		{
+			// printf("\nPrinting stack after popping:\n");
+			// printstack(s);
+			stacknode_t *current = s->top;
+			if (current == NULL)
+				continue;
+			printf("%s\n", (char *)current->data);
+		}
+
+		// 	// If the current item is a directory, recurse through it
+		// 	// and look for files
+		// 	if ((current->data)[0] == ' ')
+		// 	{
+		// 		printf("Found item in a subfolder, skipping for now: ");
+		// 		printf("%s\n", (char *)current->data);
+		// 	}
+		// 	else if (strstr(current->data, "(directory)") != NULL)
+		// 	{
+		// 		printf("Found a directory, skipping for now: ");
+		// 		printf("%s\n", (char *)current->data);
+		// 	}
+		// 	else
+		// 	{
+		// 		// If the current item is a file and it is not the file
+		// 		// of interest, pop it off
+		// 		printf("Found a file: ");
+		// 		printf("%s\n", (char *)current->data);
+		// 		printf("Checking for match with %s\n", fname);
+		// 		if (strcmp((current->data), fname) != 0)
+		// 		{
+		// 			printf("File does not match, removing!\n");
+		// 			// pop(s);
+		// 			// stack_t *s = initstack();
+		// 		}
+		// 	}
+
+		// 	current = current->next;
+		// }
 	}
 
 	// Add the top directory int npath = strlen(path);
@@ -110,3 +149,13 @@ int main(int argc, char *argv[])
 	dirArray = NULL;
 	return 0;
 }
+
+// // Loop over the stack
+// stacknode_t *current = s->top;
+// while (current != NULL)
+// {
+// 	pop(s);
+// 	printf("\nPrinting stack after popping:\n");
+// 	printstack(s);
+// 	current = current->next;
+// }
