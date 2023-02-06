@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 
 	// stack stores the lines to print out
 	stack_t *s = initstack();
+	stack_t *t = initstack();
 
 	// QC number of inputs
 	if ((argc < 2) || (argc > 3))
@@ -73,11 +74,18 @@ int main(int argc, char *argv[])
 	// Create the stack with the directory tree and put names into the array
 	pushToStack(s, path, dirArray, 0, 0);
 
-	// TODO: if there are three inputs, go through stack and remove
+	// If there are two inputs, just print the directory tree.
+	// If there are three inputs, go through stack and remove
 	// elements that do not lead to the filename
-	if (argc == 3)
+	if (argc == 2)
+		printstack(s);
+	else if (argc == 3)
 	{
+		// Get the file name from the inputs and append " (" to the end
+		// to avoid matching files that begin with the same substring
 		char *fname = argv[2];
+		strcat(fname, " (");
+
 		printf("\nGet tree for file: %s\n", fname);
 
 		stacknode_t *current = s->top;
@@ -90,38 +98,45 @@ int main(int argc, char *argv[])
 			stacknode_t *current = s->top;
 			if (current == NULL)
 				continue;
+
 			printf("%s\n", (char *)current->data);
+			// If the current item is a directory, recurse through it
+			// and look for files
+			if ((current->data)[0] == ' ')
+			{
+				printf("Found item in a subfolder, skipping for now: ");
+				printf("%s\n", (char *)current->data);
+			}
+			else if (strstr(current->data, "(directory)") != NULL)
+			{
+				printf("Found a directory, skipping for now: ");
+				printf("%s\n", (char *)current->data);
+			}
+			else
+			{
+				// If the current item is a file and it is not the file
+				// of interest, pop it off
+				printf("Found a file: ");
+				printf("%s\n", (char *)current->data);
+				printf("Checking for match with %s\n", fname);
+				printf("Match? %s\n", strstr(current->data, fname));
+				if (strstr((current->data), fname) != NULL)
+				{
+					printf("File matches, replacing!\n");
+					push(t, current->data);
+					// stack_t *s = initstack();
+				}
+			}
+
+			// current = current->next;
 		}
+		// print whats left of original stack (should be empty)
+		printf("\n\nPrinting stack:\n");
+		printstack(s);
 
-		// 	// If the current item is a directory, recurse through it
-		// 	// and look for files
-		// 	if ((current->data)[0] == ' ')
-		// 	{
-		// 		printf("Found item in a subfolder, skipping for now: ");
-		// 		printf("%s\n", (char *)current->data);
-		// 	}
-		// 	else if (strstr(current->data, "(directory)") != NULL)
-		// 	{
-		// 		printf("Found a directory, skipping for now: ");
-		// 		printf("%s\n", (char *)current->data);
-		// 	}
-		// 	else
-		// 	{
-		// 		// If the current item is a file and it is not the file
-		// 		// of interest, pop it off
-		// 		printf("Found a file: ");
-		// 		printf("%s\n", (char *)current->data);
-		// 		printf("Checking for match with %s\n", fname);
-		// 		if (strcmp((current->data), fname) != 0)
-		// 		{
-		// 			printf("File does not match, removing!\n");
-		// 			// pop(s);
-		// 			// stack_t *s = initstack();
-		// 		}
-		// 	}
-
-		// 	current = current->next;
-		// }
+		// print new stack
+		printf("\n\nPrinting new stack:\n");
+		printstack(t);
 	}
 
 	// Add the top directory int npath = strlen(path);
@@ -130,10 +145,6 @@ int main(int argc, char *argv[])
 	// printf("concat path: %s\n", path);
 	// path[npath + 1] = '\0';
 	// printf("original path: %s\n", path);
-
-	// print stack
-	printf("\n\nPrinting stack:\n");
-	printstack(s);
 
 	// free up memory
 	freestack(s);
