@@ -77,6 +77,7 @@ int pushToStack(stack_t *s, char *topdir, char **dirArray, int depth, int iarray
     // 	st_mode, st_ino, st_dev, st_uid, st_gid, st_atime, st_ctime and st_mtime
     // printf("Is it a regular file?: %d\n", dum);
 
+    char *spaces = "    ";
     DIR *dirStruct = getdir(topdir);
     errno = 0;
     struct dirent *path;
@@ -112,12 +113,16 @@ int pushToStack(stack_t *s, char *topdir, char **dirArray, int depth, int iarray
             snprintf(filesize, 50, "%lu", filesizelu);
             // printf("%s size: %s\n", path->d_name, filesizestr);
 
-            int flen = strlen("    ") + strlen(path->d_name) + strlen(filesize) + strlen(" (bytes)") + 1;
+            int flen = 4 * depth + strlen(path->d_name) + strlen(filesize) + strlen(" (bytes)") + 1;
 
             // Set this element of the array
             dirArray[iarray] = (char *)malloc(sizeof(char) * flen);
             dirArray[iarray][0] = '\0';
-            strcat(dirArray[iarray], "    ");
+            // Add the appropriate number of sets of four spaces
+            for (int i = 0; i < depth; i++)
+            {
+                strcat(dirArray[iarray], spaces);
+            }
             strcat(dirArray[iarray], path->d_name);
             strcat(dirArray[iarray], " (");
             strcat(dirArray[iarray], filesize);
@@ -133,12 +138,16 @@ int pushToStack(stack_t *s, char *topdir, char **dirArray, int depth, int iarray
             iarray = pushToStack(s, path->d_name, dirArray, depth + 1, iarray);
 
             // Get the file size
-            int flen = strlen("    ") + strlen(path->d_name) + strlen(" (directory)") + 1;
+            int flen = 4 * depth + strlen(path->d_name) + strlen(" (directory)") + 1;
 
             // Set this element of the array
             dirArray[iarray] = (char *)malloc(sizeof(char) * flen);
             dirArray[iarray][0] = '\0';
-            strcat(dirArray[iarray], "    ");
+            // Add the appropriate number of sets of four spaces
+            for (int i = 0; i < depth; i++)
+            {
+                strcat(dirArray[iarray], spaces);
+            }
             strcat(dirArray[iarray], path->d_name);
             strcat(dirArray[iarray], " (directory)");
 
