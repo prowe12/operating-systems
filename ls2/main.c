@@ -39,7 +39,6 @@ int main(int argc, char *argv[])
 
 	// stack stores the lines to print out
 	stack_t *s = initstack();
-	stack_t *t = initstack();
 
 	// QC number of inputs
 	if ((argc < 2) || (argc > 3))
@@ -71,20 +70,43 @@ int main(int argc, char *argv[])
 	// TODO: remove following
 	printf("You have chosen to look into path: %s\n", path);
 
-	// Create the stack with the directory tree and put names into the array
-	pushToStack(s, path, dirArray, 0, 0);
-
 	// If there are two inputs, just print the directory tree.
 	// If there are three inputs, go through stack and remove
 	// elements that do not lead to the filename
 	if (argc == 2)
+	{
+		// Create the stack with the directory tree and put names into the array
+		pushToStack(s, path, 0);
 		printstack(s);
+	}
 	else if (argc == 3)
 	{
+
 		// Get the file name from the inputs and append " (" to the end
 		// to avoid matching files that begin with the same substring
 		char *fname = argv[2];
+
+		int arraylen = pushToStackFile(s, fname, path, dirArray, 0, 0);
+
+		printf("\n\nPrinting dirArray\n");
+		for (int i = 0; i < arraylen; i++)
+		{
+			printf("%d\n", i);
+			printf("%s\n", dirArray[i]);
+		}
+		printf("\n\n\n");
+
+		// print stack
+		printf("\n\nPrinting original stack:\n");
+		printstack(s);
+
+		// Concatenate to fname to be able to use strstr without identifying
+		// different files with fname within their names
 		strcat(fname, " (");
+
+		// Initialize a new stack to hold the final tree that only pertains
+		// to the file of interest
+		stack_t *t = initstack();
 
 		printf("\nGet tree for file: %s\n", fname);
 
@@ -102,7 +124,7 @@ int main(int argc, char *argv[])
 			printf("%s\n", (char *)current->data);
 			// If the current item is a directory, recurse through it
 			// and look for files
-			if ((current->data)[0] == ' ')
+			if (strstr(current->data, "    "))
 			{
 				printf("Found item in a subfolder, skipping for now: ");
 				printf("%s\n", (char *)current->data);
@@ -112,7 +134,7 @@ int main(int argc, char *argv[])
 				printf("Found a directory, skipping for now: ");
 				printf("%s\n", (char *)current->data);
 			}
-			else
+			else if (strstr(current->data, "bytes)") != NULL)
 			{
 				// If the current item is a file and it is not the file
 				// of interest, pop it off
@@ -122,10 +144,14 @@ int main(int argc, char *argv[])
 				printf("Match? %s\n", strstr(current->data, fname));
 				if (strstr((current->data), fname) != NULL)
 				{
-					printf("File matches, replacing!\n");
+					printf("File matches, add to new stack!\n");
 					push(t, current->data);
-					// stack_t *s = initstack();
 				}
+			}
+			else
+			{
+				printf("Error: unexpected value in directory structure!");
+				return 0;
 			}
 
 			// current = current->next;
@@ -137,6 +163,9 @@ int main(int argc, char *argv[])
 		// print new stack
 		printf("\n\nPrinting new stack:\n");
 		printstack(t);
+
+		// free up memory for the new stack
+		freestack(t);
 	}
 
 	// Add the top directory int npath = strlen(path);
