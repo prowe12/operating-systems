@@ -64,14 +64,9 @@ int printCwd()
     return 0;
 }
 
-//
 int pushToStack(stack_t *s, char *fname, char *topdir, int depth)
 {
-
-    // 	st_mode, st_ino, st_dev, st_uid, st_gid, st_atime, st_ctime and st_mtime
-    // printf("Is it a regular file?: %d\n", dum);
-
-    int keepitem;
+    int keepitem = 1;
     char *spaces = "    ";
     DIR *dirStruct = getdir(topdir);
     errno = 0;
@@ -80,40 +75,35 @@ int pushToStack(stack_t *s, char *fname, char *topdir, int depth)
     int pathstat;
 
     // We only have the relative paths, so we need to change into the top directory first.
-    // printf("%s: \n", topdir);
     chdir(topdir);
 
     // readdir returns a pointer to dirStruct representing the next directory entry.
     // When it gets to the end, it returns NULL.
+    int keepDir = 0;
     while ((path = readdir(dirStruct)) != NULL)
     {
-        // printf("%s: \n", topdir);
-        // chdir(topdir);
-        // printCwd();
         pathstat = lstat(path->d_name, &buf);
 
         if ((pathstat != 0) || (strcmp(path->d_name, ".") == 0) || (strcmp(path->d_name, "..") == 0))
         {
-            // printf("status=%d, path=%s, skip\n", pathstat, path->d_name);
             continue;
         }
         else if (S_ISREG(buf.st_mode))
         {
 
             // keepitem = keepifmatch();
-            if ((fname == NULL) || (fname = " ") || (strcmp(path->d_name, fname) == 0))
-                keepitem = 1;
-            else
-                keepitem = 0;
+            int keepFile = 0;
+            if ((fname == NULL) || (strcmp(path->d_name, fname) == 0))
+            {
+                keepFile = 1;
+                keepDir = 1;
+            }
 
-            // printf("status=%d, path=%s, regular file, ADD\n", pathstat, path->d_name);
             // Get file size in bytes and convert to string
             off_t filesizelu = buf.st_size;
-            // printf("%s size: %ld\n", path->d_name, filesize);
             // TODO: malloc this?
             char filesize[50];
             snprintf(filesize, 50, "%lu", filesizelu);
-            // printf("%s size: %s\n", path->d_name, filesizestr);
 
             int flen = 4 * depth + strlen(path->d_name) + strlen(filesize) + strlen(" (bytes)") + 1;
 
@@ -130,14 +120,13 @@ int pushToStack(stack_t *s, char *fname, char *topdir, int depth)
             strcat(tempstr, filesize);
             strcat(tempstr, " bytes)");
 
-            // printf("iarray: %d\n", iarray);
-            if (keepitem == 1)
+            if (keepFile == 1)
                 push(s, tempstr);
         }
         else if (S_ISDIR(buf.st_mode))
         {
-            // printf("status=%d, path=%s, directory, recurse\n", pathstat, path->d_name);
-            int keepitem = pushToStack(s, fname, path->d_name, depth + 1);
+            int keepDir = pushToStack(s, fname, path->d_name, depth + 1);
+            printf("On directory: %s with keepitem = %d\n", path->d_name, keepitem);
 
             // Get the file size
             int flen = 4 * depth + strlen(path->d_name) + strlen(" (directory)") + 1;
@@ -156,7 +145,7 @@ int pushToStack(stack_t *s, char *fname, char *topdir, int depth)
 
             chdir("../");
 
-            if (keepitem == 1)
+            if ((keepDir == 1) || (fname == NULL))
                 push(s, tempstr);
         }
         else
@@ -165,7 +154,7 @@ int pushToStack(stack_t *s, char *fname, char *topdir, int depth)
         }
     }
 
-    return keepitem;
+    return keepDir;
 }
 
 // int keepifmatch(char* fname1, char* fname2) {
