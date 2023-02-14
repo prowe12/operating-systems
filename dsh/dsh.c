@@ -52,7 +52,7 @@ char **split(char *str, char *delim)
     // input includes a return character at the end
     if (strlen(str) <= 1)
     {
-        char **array = (char **)malloc((1) * sizeof(char *));
+        char **array = (char **)malloc(sizeof(char *));
         array[0] = NULL;
         return array;
     }
@@ -97,7 +97,7 @@ char **split(char *str, char *delim)
         token = strtok(NULL, delim);
     }
 
-    array[numtokens] = (char *)malloc(1 * sizeof(char));
+    array[numtokens] = (char *)malloc(sizeof(char));
     array[numtokens] = NULL;
 
     return array;
