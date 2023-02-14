@@ -20,44 +20,46 @@
  */
 char **split(char *str, char *delim)
 {
-	int CAP = 256;			// Max string length
-	char str3[strlen(str)]; // Cannot use strtok with char*
-
 	// Count the number of delimters in str
 	int numtokens = 0;
 	int i = 0;
-	while (str[i])
+	while (str[i] != '\n')
 	{
-		str3[i] = str[i];
-
 		if (str[i] == delim[0])
 		{
 			numtokens++; // Increment for each delimiter
-						 // printf("delim: ");
 		}
-		// printf("%c\n", str[i]);
+		printf("%c\n", str[i]);
 		i++;
 	}
-	numtokens++; // There is one more token than there are delimters
-	// printf("There are %d tokens\n", numtokens);
+	str[i] = '\0'; // Set the end of the string
+	numtokens++;   // There is one more token than there are delimters
 
 	// Create a 2d array of characters: that is, number of pointers to strings
 	char **array = (char **)malloc((numtokens + 1) * sizeof(char *));
 
 	// Setup the token
 	char *token;
-	token = strtok(str3, delim);
-	// printf("%s\n", token);
+
+	// str is searched until the delimiter is found. The first token is
+	// returned and the variable assigned the result points to that token (string)
+	token = strtok(str, delim);
 
 	// Loop through each array element and instantiate an array
 	// of capacity cap
+	printf("number of tokens: %d\n", numtokens);
 	for (int i = 0; i < numtokens; i++)
 	{
-		array[i] = (char *)malloc(CAP * sizeof(char));
+		array[i] = (char *)malloc((strlen(token) + 1) * sizeof(char));
 		strcpy(array[i], token);
-		token = strtok(NULL, delim); // What is this???
+
+		// strtok maintains a static pointer to the previously passed string.
+		// Thus to get the next token for the same string, NULL is passed as
+		// the first argument.
+		token = strtok(NULL, delim);
 	}
-	array[numtokens] = (char *)malloc(CAP * sizeof(char));
+
+	array[numtokens] = (char *)malloc(1 * sizeof(char));
 	array[numtokens] = NULL;
 
 	return array;
@@ -84,11 +86,23 @@ void printarray(char **array)
  */
 void testSplit()
 {
-	// char *line = (char *)malloc(256); // empty buffer to store the input
-	char *line = "hello there Penny";
+	// Sample input line
+	char line[MAXBUF] = "hello there Penny\n";
+	// char *line = "hello there Penny and Ben\n";
+	printf("length of line %ld\n", strlen(line));
 
 	// Tokenize user input
 	char **array = split(line, " ");
+
+	// Print the results
+	printf("\nBack in testSplit, printing the array again\n");
+	printarray(array);
+
+	// Sample input line
+	char line2[MAXBUF] = "git add .\n";
+
+	// Tokenize user input
+	array = split(line2, " ");
 
 	// Print the results
 	printf("\nBack in testSplit, printing the array again\n");
