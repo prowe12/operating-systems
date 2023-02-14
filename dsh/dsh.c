@@ -41,7 +41,23 @@ void printarray(char **array)
  */
 char **split(char *str, char *delim)
 {
-    // Count the number of delimters in str
+    // Check for NULL pointer
+    // TODO: what is the use case?  How do I test this?
+    if (str == NULL)
+    {
+        return NULL;
+    }
+
+    // Check for empty string. This should never happen because user
+    // input includes a return character at the end
+    if (strlen(str) <= 1)
+    {
+        char **array = (char **)malloc((1) * sizeof(char *));
+        array[0] = NULL;
+        return array;
+    }
+
+    // Count the number of delimiters in str
     int numtokens = 0;
     int i = 0;
     while (str[i] != '\n')
@@ -53,7 +69,7 @@ char **split(char *str, char *delim)
         i++;
     }
     str[i] = '\0'; // Set the end of the string
-    numtokens++;   // There is one more token than there are delimters
+    numtokens++;   // There is one more token than there are delimiters
 
     // Create a 2d array of characters: that is, number of pointers to strings
     char **array = (char **)malloc((numtokens + 1) * sizeof(char *));
@@ -64,6 +80,9 @@ char **split(char *str, char *delim)
     // str is searched until the delimiter is found. The first token is
     // returned and the variable assigned the result points to that token (string)
     token = strtok(str, delim);
+    i = 0;
+    array[i] = (char *)malloc((strlen(token) + 1) * sizeof(char));
+    strcpy(array[i], token);
 
     // Loop through each array element and instantiate an array
     // of capacity cap

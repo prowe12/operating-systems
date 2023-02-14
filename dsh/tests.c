@@ -10,7 +10,8 @@
 #include <assert.h>
 #include "dsh.h"
 
-/*
+/**
+ * Helper function:
  * Concatenates input strings into a single string.
  * Returns the pointer to the resulting string.
  * The string memory is allocated with malloc(),
@@ -73,7 +74,7 @@ char *getArrayAsStr(char **strings)
 }
 
 /**
- * Test the split functions
+ * Test the split functions on a simple case
  */
 void testSplitSimple()
 {
@@ -89,10 +90,12 @@ void testSplitSimple()
 
     // Assert
     assert(strcmp(outstr, "hello there Penny\n") == 0);
+    free(outstr);
+    return;
 }
 
 /**
- * Test the split functions
+ * Test the split functions on a case with a '.'
  */
 void testSplitDot()
 {
@@ -107,6 +110,48 @@ void testSplitDot()
 
     // Assert
     assert(strcmp(outstr, "git add .\n") == 0);
+    free(outstr);
+    return;
+}
+
+/**
+ * Test the split functions on an empty string
+ */
+void testEmptyString()
+{
+    // Sample input line
+    char line[256] = "";
+
+    // Tokenize user input
+    char **array = split(line, " ");
+
+    // Get the results
+    char *outstr = getArrayAsStr(array);
+
+    // // Assert
+    assert(strcmp(outstr, "") == 0);
+    free(outstr);
+    return;
+}
+
+/**
+ * Test the split functions on an empty string
+ */
+void testReturnOnly()
+{
+    // Sample input line
+    char line[256] = "\n";
+
+    // Tokenize user input
+    char **array = split(line, " ");
+
+    // Get the results
+    char *outstr = getArrayAsStr(array);
+
+    // // Assert
+    assert(strcmp(outstr, "") == 0);
+    free(outstr);
+    return;
 }
 
 /**
@@ -117,5 +162,8 @@ int main(int argc, char *argv[])
 {
     testSplitSimple();
     testSplitDot();
+    testEmptyString();
+    testReturnOnly();
+
     return 0;
 }
