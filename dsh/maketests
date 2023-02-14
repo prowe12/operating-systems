@@ -1,0 +1,25 @@
+# Make this with make -f maketest
+all: tests.c builtins.o dsh.o 
+	gcc -Wall -g -o tests tests.c builtins.o dsh.o
+
+builtins.o: builtins.h builtins.c
+	gcc -Wall -c builtins.c
+
+dsh.o: dsh.h dsh.c
+	gcc -Wall -g -c dsh.c
+
+clean:
+	rm -f tests *.o
+
+# Make this with make -f maketest
+#all: test.c ls2.h ls2.o stack.o
+#	gcc -Wall -g -o test test.c ls2.o stack.o
+#
+#ls2.o: ls2.h ls2.c
+#	gcc -Wall -g -c ls2.c
+#
+#stack.o: stack.h stack.c
+#	gcc -Wall -g -c stack.c
+#
+#clean:
+#	rm -f ls2 *.o
