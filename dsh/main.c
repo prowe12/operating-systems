@@ -15,17 +15,25 @@
 int main(int argc, char **argv)
 {
 
-	// TODO: Write the main command-prompt loop to repeatedly accept input.
-	// TODO: remove assignment in following
-	char cmdline[MAXBUF] = "git add .\n"; // stores user input from commmand line
+	// TODO: clean up following
+	char cmdline[MAXBUF]; // = "git add .\n"; // stores user input from commmand line
 
-	// Print the prompt
-	printf("dsh> ");
+	// Main command-prompt loop that repeatedly accepts input
+	while (1)
+	{
+		// Print the prompt, then get and split user input
+		printf("dsh> ");
+		fgets(cmdline, MAXBUF, stdin); // read up to 256 chars into buffer
 
-	// TODO: Uncomment this line
-	// fgets(cmdline, 256, stdin);		  // read up to 256 chars into buffer
+		char **array = split(cmdline, " ");
+		printarray(array);
 
-	// TODO: Work on handling the built-in commands next.
-	// TODO: Work on command execution when given the full path to an executable. (Mode 1)
-	// TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
+		// TODO: Work on handling the built-in commands.
+
+		// TODO: Work on command execution when given the full path to an executable. (Mode 1)
+		// TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
+
+		if ((array[0] != NULL) && (strcmp(array[0], "exit") == 0))
+			break;
+	}
 }
