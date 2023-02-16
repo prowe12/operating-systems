@@ -41,6 +41,8 @@ int main(int argc, char **argv)
 		printarray(array);
 
 		int nargs = numtokens - 1;
+		printf("nargs: %d\n", nargs);
+
 		char *cmd = array[0];
 		if (cmd == NULL)
 			continue;
@@ -49,7 +51,7 @@ int main(int argc, char **argv)
 		else if (!strcmp(cmd, "cd"))
 			changeDir(array, nargs);
 		else if (!strcmp(cmd, "pwd"))
-			printCwd();
+			printCwd(nargs);
 		// else if (!strcmp(cmd, "history"))
 		// 	printf("history\n");
 		// else if (!strcmp(cmd, "echo"))

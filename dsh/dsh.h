@@ -11,7 +11,7 @@
 void printarray(char **array);
 int getNumTokens(char *str, char *delim);
 char **split(char *str, char *delim, int numtokens);
-void printCwd();
+void printCwd(int nargs);
 void changeDir(char **array, int nargs);
 void printTheEcho(char **array);
 void printHistory(char **array);

@@ -41,6 +41,7 @@
 /**
  * Change the directory
  * @param array  Array with command and arguments
+ * @param nargs  Number of arguments
  */
 void changeDir(char **array, int nargs)
 {
@@ -69,8 +70,14 @@ void changeDir(char **array, int nargs)
 /**
  * Print the current working directory
  */
-void printCwd()
+void printCwd(int nargs)
 {
+    if (nargs > 0)
+    {
+        printf("pwd: too many arguments\n");
+        return;
+    }
+
     char cwd[256];
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
