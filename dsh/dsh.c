@@ -44,14 +44,24 @@
  */
 void changeDir(char **array, int nargs)
 {
-    // cd with no arguments => cd to home directory
-    if (nargs == 0)
+    if (nargs > 1)
     {
-        printf("Get home directory from environment and cd to it\n");
+        printf("cd: too many arguments");
         return;
     }
 
-    if (chdir(array[1]) != 0)
+    // cd with no arguments => cd to home directory
+    char *direc;
+    if (nargs == 0)
+    {
+        printf("Get home directory from HOME variable in environment and cd to it\n");
+        direc = getenv("HOME");
+        printf("directory: %s\n", direc);
+    }
+    else
+        direc = array[1];
+
+    if (chdir(direc) != 0)
         printf("cd: no such file or directory: %s\n", array[1]);
     return;
 }
