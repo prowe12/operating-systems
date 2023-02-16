@@ -196,6 +196,7 @@ void cleanup(char str[MAXBUF], char str1[MAXBUF])
  * Split a string into tokens
  * @params str  The string to split
  * @params delim  The delimiter to split on
+ * @params numtokens  The number of tokens
  * @returns  An array of tokens
  */
 char **split(char *str, char *delim, int numtokens)
@@ -213,28 +214,6 @@ char **split(char *str, char *delim, int numtokens)
         array[0] = NULL;
         return array;
     }
-
-    // // Count the number of delimiters in str int numtokens = 0;
-    // int i = 0;
-    // int numtokens = 0;
-    // while (str[i] != '\0')
-    // {
-    //     if (str[i] == delim[0])
-    //     {
-    //         numtokens++; // Increment for each delimiter
-    //     }
-    //     i++;
-    // }
-
-    // printf("The previous character is [%c]\n", str[i - 1]);
-    // printf("The final character is [%c]\n", str[i]);
-    // printf("numtokens: %d\n", numtokens);
-
-    // // TODO: do we need this?
-    // printf("numtokens:%d\n", numtokens);
-    // printf("i: %d\n", i);
-    // printf("strlen(str)%ld\n", strlen(str));
-    // str[i] = '\0'; // Set the end of the string
 
     // Create a 2d array of characters: that is, number of pointers to strings
     char **array = (char **)malloc((numtokens + 1) * sizeof(char *));
@@ -264,9 +243,6 @@ char **split(char *str, char *delim, int numtokens)
 
     array[numtokens] = (char *)malloc(sizeof(char));
     array[numtokens] = NULL;
-
-    // Set nargs because it's useful to have
-    // *nargs = numtokens - 1;
 
     return array;
 }
