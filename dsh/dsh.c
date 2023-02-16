@@ -101,33 +101,23 @@ int executeCmd(char **array)
 
     if (array[0][0] == '/')
     {
-        // Full path given
-        printf("I have the full path\n");
-
-        // Check if the path exists
+        // Full path given; check if the path exists
         if (access(array[0], F_OK | X_OK) != 0)
         {
             printf("dsh: no such file or directory: %s\n", array[0]);
             return 1;
         }
 
-        printf("File exists and is executable! Can run!\n");
-
         int child_pid = fork();
-        printf("The child pid is %d\n", child_pid);
-
         if (child_pid == 0)
         {
-            printf("Child process: Run the exec, then quit\n");
             status = execv(array[0], array);
-
             if (status == -1)
                 printf("Problem with command");
             return child_pid;
         }
         else
         {
-            printf("Parent process: Wait for child then keep going\n");
             wait(NULL);
             return child_pid;
         }
