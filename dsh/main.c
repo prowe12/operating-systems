@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
 		// Remove trailing spaces and replace return at end with null character
 		cleanup(cmdlineIn, cmdline);
-		printf("[%s]\n", cmdline);
+		printf("After cleaning, cmdline is: [%s]\n", cmdline);
 
 		if (strlen(cmdline) == 0)
 			continue;

@@ -203,13 +203,11 @@ char **split(char *str, char *delim, int numtokens)
     // Check for NULL pointer
     // TODO: what is the use case?  How do I test this?
     if (str == NULL)
-    {
         return NULL;
-    }
 
-    // Check for empty string. This should never happen because user
-    // input includes a return character at the end
-    if (strlen(str) <= 1)
+    // Check for empty string. The string has been cleaned and so should
+    // contain only the command and arguments
+    if (strlen(str) <= 0)
     {
         char **array = (char **)malloc(sizeof(char *));
         array[0] = NULL;
