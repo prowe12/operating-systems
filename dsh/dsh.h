@@ -16,4 +16,4 @@ void changeDir(char **array, int nargs);
 void printTheEcho(char **array);
 void printHistory(char **array);
 void cleanup(char str[MAXBUF], char str1[MAXBUF]);
-int executeCmd(char **array, int nargs);
+int executeCmd(char **array);

@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 			printCwd(nargs);
 		else
 		{
-			int child_pid = executeCmd(array, nargs);
+			int child_pid = executeCmd(array);
 			printf("pid: %d\n", child_pid);
 			if (child_pid == 0)
 				break; // Child process - done!

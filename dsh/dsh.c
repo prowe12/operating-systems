@@ -91,7 +91,7 @@ void printCwd(int nargs)
     return;
 }
 
-int executeCmd(char **array, int nargs)
+int executeCmd(char **array)
 {
     // TODO: Work on command execution when given the full path to an executable. (Mode 1)
     // TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
