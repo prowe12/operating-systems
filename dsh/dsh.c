@@ -148,9 +148,13 @@ int getNumTokens(char *str, char *delim)
 }
 
 /**
- * Remove trailing spaces and return from end of input
+ * Remove trailing return and leading and trailing spaces
+ * @param str  The original string
+ * @param str1  The final string
+ * Note: Code for removal of leading spaces from
+ * https://www.geeksforgeeks.org/c-program-to-trim-leading-white-spaces-from-string/
  */
-void cleanup(char str[MAXBUF])
+void cleanup(char str[MAXBUF], char str1[MAXBUF])
 {
     // Check for empty string. This should never happen because user
     // input includes a return character at the end
@@ -160,7 +164,7 @@ void cleanup(char str[MAXBUF])
         return;
     }
 
-    // Remove trailing spaces
+    // Remove final return and trailing spaces
     int i = strlen(str) - 1; // subtract 1 to get index
     if (str[i - 1] == ' ')
     {
@@ -170,6 +174,21 @@ void cleanup(char str[MAXBUF])
         i++;
     }
     str[i] = '\0'; // Put null at end of string
+
+    // Remove preceding spaces
+    int idx = 0, j, k = 0;
+    while (str[idx] == ' ' || str[idx] == 't')
+    {
+        idx++;
+    }
+
+    for (j = idx; str[j] != '\0'; j++)
+    {
+        str1[k] = str[j];
+        k++;
+    }
+    str1[k] = '\0';
+
     return;
 }
 

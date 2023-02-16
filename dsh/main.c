@@ -17,17 +17,18 @@ int main(int argc, char **argv)
 {
 
 	// TODO: clean up following
-	char cmdline[MAXBUF]; // = "git add .\n"; // stores user input from commmand line
+	char cmdline[MAXBUF];	// = "git add .\n"; // stores user input from commmand line
+	char cmdlineIn[MAXBUF]; // = "git add .\n"; // stores user input from commmand line
 
 	// Main command-prompt loop that repeatedly accepts input
 	while (1)
 	{
 		// Print the prompt, then get and split user input
 		printf("dsh> ");
-		fgets(cmdline, MAXBUF, stdin); // read up to 256 chars into buffer
+		fgets(cmdlineIn, MAXBUF, stdin); // read up to 256 chars into buffer
 
 		// Remove trailing spaces and replace return at end with null character
-		cleanup(cmdline);
+		cleanup(cmdlineIn, cmdline);
 		printf("[%s]\n", cmdline);
 
 		if (strlen(cmdline) == 0)
