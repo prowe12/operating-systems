@@ -91,21 +91,49 @@ void printCwd(int nargs)
     return;
 }
 
-// TODO: write this method
-// void executeCmd() {
-//     // Full path given
-//     if (array[1][1] == '/')
-//     {
-//         // TODO: implement
-//         printf("I have the full path");
-//     }
-//     else
-//     {
-//         // TODO: implement
-//         printf("Need to find the location of the executable");
-//     }
-//     return;
-// }
+int executeCmd(char **array)
+{
+    // TODO: Work on command execution when given the full path to an executable. (Mode 1)
+    // TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
+
+    printf("array[1][0] [%c]\n", array[0][0]);
+
+    if (array[0][0] == '/')
+    {
+        // Full path given
+        printf("I have the full path\n");
+
+        // Check if the path exists
+        if (access(array[0], F_OK | X_OK) == 0)
+        {
+            printf("File exists and is executable! Can run!\n");
+            int child_pid = fork();
+            printf("The child pid is %d\n", child_pid);
+            if (child_pid == 0)
+            {
+                printf("Child process: Run the exec, then quit\n");
+                return child_pid;
+            }
+            else
+            {
+                printf("Parent process: Wait for child then keep going\n");
+                wait(NULL);
+                return child_pid;
+            }
+        }
+        else
+        {
+            printf("dsh: no such file or directory: %s\n", array[0]);
+            return 1;
+        }
+    }
+    else
+    {
+        // TODO: implement
+        printf("Need to find the location of the executable\n");
+    }
+    return 1;
+}
 
 /**
  * Print the array

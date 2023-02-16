@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h> // For getcwd(), chdir()
+#include <unistd.h> // For getcwd(), chdir(), etc
 #include <sys/stat.h>
 #include <string.h>
 #include "builtins.h"
@@ -53,12 +53,14 @@ int main(int argc, char **argv)
 			changeDir(array, nargs);
 		else if (!strcmp(cmd, "pwd"))
 			printCwd(nargs);
-		// else if (!strcmp(cmd, "history"))
-		// 	printf("history\n");
-		// else if (!strcmp(cmd, "echo"))
-		// 	printf("echo\n");
-
-		// TODO: Work on command execution when given the full path to an executable. (Mode 1)
-		// TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
+		else
+		{
+			int child_pid = executeCmd(array);
+			printf("pid: %d\n", child_pid);
+			if (child_pid == 0)
+				break; // Child process - done!
+			else
+				printf("I am the parent of pid %d; keep going\n", child_pid);
+		}
 	}
 }
