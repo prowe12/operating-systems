@@ -119,24 +119,7 @@ int executeCmd(char **array, int nargs)
         if (child_pid == 0)
         {
             printf("Child process: Run the exec, then quit\n");
-            if (nargs == 0)
-            {
-                char *const argv[] = {NULL};
-                status = execv(array[0], argv);
-            }
-            else if (nargs == 1)
-            {
-                printf("array[1]:%s\n", array[1]);
-                char *const argv[] = {array[0], array[1], NULL};
-                status = execv(array[0], argv);
-            }
-            else if (nargs == 2)
-            {
-                char *const argv[] = {array[1], array[2], NULL};
-                status = execv(array[0], argv);
-            }
-            else
-                printf("Bad number of input arguments\n");
+            status = execv(array[0], array);
 
             if (status == -1)
                 printf("Problem with command");
