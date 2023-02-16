@@ -9,4 +9,10 @@
 #define HISTORY_LEN 100
 
 void printarray(char **array);
-char **split(char *str, char *delim);
+int getNumTokens(char *str, char *delim);
+char **split(char *str, char *delim, int numtokens);
+void printCwd();
+void changeDir(char **array, int nargs);
+void printTheEcho(char **array);
+void printHistory(char **array);
+void cleanup(char str[MAXBUF]);

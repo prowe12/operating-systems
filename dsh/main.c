@@ -7,9 +7,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <unistd.h> // For getcwd(), chdir()
 #include <sys/stat.h>
 #include <string.h>
+#include "builtins.h"
 #include "dsh.h"
 
 int main(int argc, char **argv)
@@ -25,15 +26,36 @@ int main(int argc, char **argv)
 		printf("dsh> ");
 		fgets(cmdline, MAXBUF, stdin); // read up to 256 chars into buffer
 
-		char **array = split(cmdline, " ");
+		// Remove trailing spaces and replace return at end with null character
+		cleanup(cmdline);
+		printf("[%s]\n", cmdline);
+
+		if (strlen(cmdline) == 0)
+			continue;
+
+		int numtokens = getNumTokens(cmdline, " ");
+		printf("numtokens: %d\n", numtokens);
+
+		char **array = split(cmdline, " ", numtokens);
+		printf("array[0]: %s\n", array[0]);
 		printarray(array);
 
-		// TODO: Work on handling the built-in commands.
+		int nargs = numtokens - 1;
+		char *cmd = array[0];
+		if (cmd == NULL)
+			continue;
+		else if (!strcmp(cmd, "exit"))
+			break;
+		else if (!strcmp(cmd, "cd"))
+			changeDir(array, nargs);
+		else if (!strcmp(cmd, "pwd"))
+			printCwd();
+		// else if (!strcmp(cmd, "history"))
+		// 	printf("history\n");
+		// else if (!strcmp(cmd, "echo"))
+		// 	printf("echo\n");
 
 		// TODO: Work on command execution when given the full path to an executable. (Mode 1)
 		// TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
-
-		if ((array[0] != NULL) && (strcmp(array[0], "exit") == 0))
-			break;
 	}
 }
