@@ -91,12 +91,13 @@ void printCwd(int nargs)
     return;
 }
 
-int executeCmd(char **array)
+int executeCmd(char **array, int nargs)
 {
     // TODO: Work on command execution when given the full path to an executable. (Mode 1)
     // TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
 
     printf("array[1][0] [%c]\n", array[0][0]);
+    int status;
 
     if (array[0][0] == '/')
     {
@@ -104,29 +105,51 @@ int executeCmd(char **array)
         printf("I have the full path\n");
 
         // Check if the path exists
-        if (access(array[0], F_OK | X_OK) == 0)
-        {
-            printf("File exists and is executable! Can run!\n");
-            int child_pid = fork();
-            printf("The child pid is %d\n", child_pid);
-            if (child_pid == 0)
-            {
-                printf("Child process: Run the exec, then quit\n");
-                return child_pid;
-            }
-            else
-            {
-                printf("Parent process: Wait for child then keep going\n");
-                wait(NULL);
-                return child_pid;
-            }
-        }
-        else
+        if (access(array[0], F_OK | X_OK) != 0)
         {
             printf("dsh: no such file or directory: %s\n", array[0]);
             return 1;
         }
+
+        printf("File exists and is executable! Can run!\n");
+
+        int child_pid = fork();
+        printf("The child pid is %d\n", child_pid);
+
+        if (child_pid == 0)
+        {
+            printf("Child process: Run the exec, then quit\n");
+            if (nargs == 0)
+            {
+                char *const argv[] = {NULL};
+                status = execv(array[0], argv);
+            }
+            else if (nargs == 1)
+            {
+                printf("array[1]:%s\n", array[1]);
+                char *const argv[] = {array[0], array[1], NULL};
+                status = execv(array[0], argv);
+            }
+            else if (nargs == 2)
+            {
+                char *const argv[] = {array[1], array[2], NULL};
+                status = execv(array[0], argv);
+            }
+            else
+                printf("Bad number of input arguments\n");
+
+            if (status == -1)
+                printf("Problem with command");
+            return child_pid;
+        }
+        else
+        {
+            printf("Parent process: Wait for child then keep going\n");
+            wait(NULL);
+            return child_pid;
+        }
     }
+
     else
     {
         // TODO: implement
