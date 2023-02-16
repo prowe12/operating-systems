@@ -74,6 +74,22 @@ void printCwd()
     return;
 }
 
+// TODO: write this method
+// void executeCmd() {
+//     // Full path given
+//     if (array[1][1] == '/')
+//     {
+//         // TODO: implement
+//         printf("I have the full path");
+//     }
+//     else
+//     {
+//         // TODO: implement
+//         printf("Need to find the location of the executable");
+//     }
+//     return;
+// }
+
 /**
  * Print the array
  * @params array  The array
