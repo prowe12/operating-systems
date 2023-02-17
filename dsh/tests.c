@@ -182,14 +182,24 @@ void testPath()
     assert(strcmp(getenv("PATH"), originalPath) == 0);
 }
 
+void testFree()
+{
+    int i = 0;
+    char **array = (char **)malloc((256 + 1) * sizeof(char *));
+    array[i] = (char *)malloc((256 + 1) * sizeof(char));
+    free(array[0]);
+    free(array);
+    printf("Success\n");
+}
+
 /**
  * Main function
  * Usage: ls2 <path> [exact-match-pattern]
  */
 int main(int argc, char *argv[])
 {
-    testPath();
-
+    // testFree();
+    // testPath();
     // testSplitSimple();
     // testSplitDot();
     // testEmptyString();
