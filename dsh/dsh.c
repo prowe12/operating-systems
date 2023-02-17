@@ -117,7 +117,13 @@ int buildPathAndExecuteCmd(char **array)
             int numtokens;
             strcat(cwd, "/");
             strcat(cwd, array[0]);
-            if (access(cwd, F_OK | X_OK) != 0)
+            if (access(cwd, F_OK | X_OK) == 0)
+            {
+                strcpy(array[0], cwd);
+                int child_pid = executeCmd(array);
+                return child_pid;
+            }
+            else
             {
                 // Try the other paths. Note that we have to copy path,
                 // because it will be modified (which would then modify PATH)
@@ -282,7 +288,6 @@ char **split(char *str, char *delim, int numtokens)
  */
 void printarray(char **array)
 {
-
     int i = 0;
     while (array[i])
     {
