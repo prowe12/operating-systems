@@ -50,11 +50,10 @@ void changeDir(char **array, int nargs)
     }
 
     // cd with no arguments => cd to home directory
+    // otherwise cd to path given
     char *direc;
     if (nargs == 0)
-    {
         direc = getenv("HOME");
-    }
     else
         direc = array[1];
 
@@ -92,8 +91,6 @@ void printCwd(int nargs)
  */
 int executeCmd(char **array)
 {
-    int status;
-
     // Full path given; check if the path exists
     if (access(array[0], F_OK | X_OK) != 0)
     {
@@ -104,7 +101,7 @@ int executeCmd(char **array)
     int child_pid = fork();
     if (child_pid == 0)
     {
-        status = execv(array[0], array);
+        int status = execv(array[0], array);
         if (status == -1)
             printf("Problem with command");
         return child_pid;
@@ -161,7 +158,9 @@ int buildPathAndExecuteCmd(char **array)
                         return child_pid;
                     }
                 }
-                return 1;
+
+                // No paths worked, so the command is not found
+                printf("ERROR: %s not found!\n", array[0]);
             }
         }
         else

@@ -43,7 +43,6 @@ int main(int argc, char **argv)
 		int numtokens = getNumTokens(cmdline, " ");
 
 		char **array = split(cmdline, " ", numtokens);
-		// printarray(array);
 		int nargs = numtokens - 1;
 
 		char *cmd = array[0];
