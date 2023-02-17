@@ -21,10 +21,8 @@
 // TODO: run valgrind to check for memory leaks
 int main(int argc, char **argv)
 {
-
-	// TODO: clean up following
-	char cmdline[MAXBUF];	// = "git add .\n"; // stores user input from commmand line
-	char cmdlineIn[MAXBUF]; // = "git add .\n"; // stores user input from commmand line
+	char cmdlineIn[MAXBUF]; // stores user input from commmand line
+	char cmdline[MAXBUF];	// stores cleaned user input
 
 	// Main command-prompt loop that repeatedly accepts input
 	while (1)
@@ -40,19 +38,19 @@ int main(int argc, char **argv)
 		if (strlen(cmdline) == 0)
 			continue;
 
+		// Build the array for the command and get the number of arguments
 		int numtokens = getNumTokens(cmdline, " ");
-
 		char **array = split(cmdline, " ", numtokens);
 		int nargs = numtokens - 1;
 
-		char *cmd = array[0];
-		if (cmd == NULL)
+		// Perform the command
+		if (array[0] == NULL)
 			continue;
-		else if (!strcmp(cmd, "exit"))
+		else if (!strcmp(array[0], "exit"))
 			break;
-		else if (!strcmp(cmd, "cd"))
+		else if (!strcmp(array[0], "cd"))
 			changeDir(array, nargs);
-		else if (!strcmp(cmd, "pwd"))
+		else if (!strcmp(array[0], "pwd"))
 			printCwd(nargs);
 		else
 		{
