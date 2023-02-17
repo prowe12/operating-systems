@@ -13,8 +13,6 @@
 #include "builtins.h"
 #include "dsh.h"
 
-// TODO NotARealcommand -o should return ERROR: NotARealcommand not found!
-// TODO cat feelGood.c does not end with a carriage return
 // TODO after cat feelGood.c, it hangs
 // TODO: ./feelGood does nothing
 // TOOD: implement &
