@@ -143,8 +143,10 @@ int buildPathAndExecuteCmd(char **array)
                 char path[MAXBUF];
                 strcpy(path, getenv("PATH"));
                 numtokens = getNumTokens(path, ":");
-                char **paths = split(path, ":", numtokens);
 
+                // Build an array containing the paths.  Then test each path
+                // one-by-one to see if the command is in it.
+                char **paths = split(path, ":", numtokens);
                 for (int i = 0; i < numtokens; i++)
                 {
                     cwd[0] = '\0';
@@ -153,11 +155,14 @@ int buildPathAndExecuteCmd(char **array)
                     strcat(cwd, array[0]);
                     if (access(cwd, F_OK | X_OK) == 0)
                     {
+                        // Free up the mallocd space on the heap before leaving
+                        freearray(paths);
                         strcpy(array[0], cwd);
                         int child_pid = executeCmd(array);
                         return child_pid;
                     }
                 }
+                freearray(paths); // If we get here, we haven't freed the array yet!
 
                 // No paths worked, so the command is not found
                 printf("ERROR: %s not found!\n", array[0]);
@@ -205,35 +210,33 @@ int getNumTokens(char *str, char *delim)
  */
 void cleanup(char str[MAXBUF], char str1[MAXBUF])
 {
-    // Check for empty string. This should never happen because user
-    // input includes a return character at the end
-    if (strlen(str) <= 1)
+    char tempstr[MAXBUF];
+    strcpy(tempstr, str);
+
+    // Remove final return and trailing spaces
+    int i = strlen(tempstr) - 1; // subtract 1 to get index
+    while (i >= 0 && tempstr[i] == ' ')
+        i--;
+    tempstr[i] = '\0'; // Put null at end of string
+
+    if (strlen(tempstr) < 1)
     {
-        str[0] = '\0';
+        strcpy(str1, "\0");
         return;
     }
 
-    // Remove final return and trailing spaces
-    int i = strlen(str) - 1; // subtract 1 to get index
-    if (str[i - 1] == ' ')
-    {
-        i--;
-        while (str[i] == ' ')
-            i--;
-        i++;
-    }
-    str[i] = '\0'; // Put null at end of string
+    printf("the string is [%s]\n", tempstr);
 
     // Remove preceding spaces
     int idx = 0, j, k = 0;
-    while (str[idx] == ' ' || str[idx] == '\t')
+    while (tempstr[idx] == ' ' || tempstr[idx] == '\t')
     {
         idx++;
     }
 
-    for (j = idx; str[j] != '\0'; j++)
+    for (j = idx; tempstr[j] != '\0'; j++)
     {
-        str1[k] = str[j];
+        str1[k] = tempstr[j];
         k++;
     }
     str1[k] = '\0';
@@ -266,8 +269,7 @@ char **split(char *str, char *delim, int numtokens)
 
     // Create a 2d array of characters: that is, number of pointers to strings
     // TODO: fix this
-    // char **array = (char **)malloc((numtokens + 1) * sizeof(char *));
-    char **array = (char **)malloc((256 + 1) * sizeof(char *));
+    char **array = (char **)malloc(256 * (numtokens + 1) * sizeof(char *));
 
     // Setup the token
     char *token;
@@ -280,8 +282,7 @@ char **split(char *str, char *delim, int numtokens)
     // of capacity cap
     for (int i = 0; i < numtokens; i++)
     {
-        // TODO: fix this
-        // array[i] = (char *)malloc((strlen(token) + 1) * sizeof(char));
+        // TODO: fix following
         array[i] = (char *)malloc((256 + 1) * sizeof(char));
         strcpy(array[i], token);
 
@@ -316,7 +317,7 @@ void printarray(char **array)
  * Frees up the array
  * @param array  The array
  */
-void freearray(char **array, int numtokens)
+void freearray(char **array)
 {
     printf("In freearray\n");
 

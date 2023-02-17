@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 {
 	char cmdlineIn[MAXBUF]; // stores user input from commmand line
 	char cmdline[MAXBUF];	// stores cleaned user input
-	char **array;			// Here are down below?
+	char **array;			// Here or down below?
 
 	// Main command-prompt loop that repeatedly accepts input
 	while (1)
@@ -34,7 +34,9 @@ int main(int argc, char **argv)
 		// Remove trailing spaces and replace return at end with null character
 		cleanup(cmdlineIn, cmdline);
 
-		if (strlen(cmdline) == 0)
+		printf("cmdline [%s]\n", cmdline);
+		printf("strlen(cmdline) %ld\n", strlen(cmdline));
+		if (strlen(cmdline) <= 1)
 			continue;
 
 		// Build the array for the command and get the number of arguments
@@ -45,12 +47,12 @@ int main(int argc, char **argv)
 		// Perform the command
 		if (array[0] == NULL)
 		{
-			freearray(array, numtokens);
+			freearray(array);
 			continue;
 		}
 		else if (!strcmp(array[0], "exit"))
 		{
-			freearray(array, numtokens);
+			freearray(array);
 			break;
 		}
 		else if (!strcmp(array[0], "cd"))
@@ -64,13 +66,13 @@ int main(int argc, char **argv)
 			{
 				printf("In child, about to free\n");
 
-				// freearray(array, numtokens);
+				freearray(array);
 				printf("In child, just freed\n");
 				break; // Child process - done!
 			}
 		}
 		printf("Got to line 72 in main\n");
-		freearray(array, numtokens);
+		freearray(array);
 		// printarray(array);
 		// printf("array[0] = [%s]\n", array[0]);
 		// free(array[0]);
