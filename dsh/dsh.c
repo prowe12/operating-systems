@@ -17,8 +17,6 @@
 #include <string.h>
 #include "builtins.h"
 
-#define HISTORY_LEN 100
-
 /**
  * print the echo
  */
@@ -80,9 +78,7 @@ void printCwd(int nargs)
 
     char cwd[256];
     if (getcwd(cwd, sizeof(cwd)) != NULL)
-    {
         printf("%s\n", cwd);
-    }
     else
     {
         perror("getcwd() error");
@@ -125,8 +121,49 @@ int executeCmd(char **array)
 
     else
     {
-        // TODO: implement
-        printf("Need to find the location of the executable\n");
+        char cwd[MAXBUF];
+        printf("Find the location of the executable\n");
+        // First try the working directory
+        if (getcwd(cwd, sizeof(cwd)) != NULL)
+        {
+            int numtokens;
+            printf("Working directory is: %s\n", cwd);
+            strcat(cwd, "/");
+            strcat(cwd, array[0]);
+            if (access(cwd, F_OK | X_OK) != 0)
+            {
+                // Try the other paths. Note that we have to copy path,
+                // because it will be modified (which would then modify PATH)
+                char path[MAXBUF];
+                strcpy(path, getenv("PATH"));
+                printf("Path: %s\n", path);
+                numtokens = getNumTokens(path, ":");
+                printf("numtokens: %d\n", numtokens);
+                printf("Path after getting numtokens: %s\n", path);
+                char **paths = split(path, ":", numtokens);
+                printf("Path after split: %s\n", path);
+
+                for (int i = 0; i < numtokens; i++)
+                {
+                    cwd[0] = '\0';
+                    strcat(cwd, paths[i]);
+                    strcat(cwd, "/");
+                    strcat(cwd, array[0]);
+                    printf("Try path %s\n", cwd);
+                    if (access(cwd, F_OK | X_OK) == 0)
+                    {
+                        printf("Found path %s\n", cwd);
+                        return 1;
+                    }
+                }
+                return 1;
+            }
+        }
+        else
+        {
+            perror("getcwd() error");
+            return 1;
+        }
     }
     return 1;
 }

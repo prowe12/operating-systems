@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 	// Main command-prompt loop that repeatedly accepts input
 	while (1)
 	{
+
 		// Print the prompt, then get and split user input
 		printf("dsh> ");
 		fgets(cmdlineIn, MAXBUF, stdin); // read up to 256 chars into buffer
