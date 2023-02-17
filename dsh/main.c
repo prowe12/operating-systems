@@ -34,9 +34,7 @@ int main(int argc, char **argv)
 		// Remove trailing spaces and replace return at end with null character
 		cleanup(cmdlineIn, cmdline);
 
-		printf("cmdline [%s]\n", cmdline);
-		printf("strlen(cmdline) %ld\n", strlen(cmdline));
-		if (strlen(cmdline) <= 1)
+		if (strlen(cmdline) < 1)
 			continue;
 
 		// Build the array for the command and get the number of arguments
@@ -64,29 +62,10 @@ int main(int argc, char **argv)
 			int child_pid = buildPathAndExecuteCmd(array);
 			if (child_pid == 0)
 			{
-				printf("In child, about to free\n");
-
 				freearray(array);
-				printf("In child, just freed\n");
 				break; // Child process - done!
 			}
 		}
-		printf("Got to line 72 in main\n");
 		freearray(array);
-		// printarray(array);
-		// printf("array[0] = [%s]\n", array[0]);
-		// free(array[0]);
-		// int i = 0;
-		//  while (array[i])
-		//  {
-		//  	printf("%s\n", array[i]);
-		//  	printf("got to line 326\n");
-		//  	free(array[i]);
-		//  	printf("In freearray, got to line 327\n");
-		//  	i++;
-		//  }
-		// free(array);
-
-		printf("Got past final free\n");
 	}
 }

@@ -18,25 +18,6 @@
 #include "builtins.h"
 
 /**
- * print the echo
- */
-// void printTheEcho(char **array)
-// {
-//     printf("printTheEcho\n");
-//     return;
-// }
-
-/**
- * print the history
- * @param array  Array with command and arguments
- */
-// void printHistory(char **array)
-// {
-//     printf("In printHistory\n");
-//     return;
-// }
-
-/**
  * Change the directory
  * @param array  Array with command and arguments
  * @param nargs  Number of arguments
@@ -225,8 +206,6 @@ void cleanup(char str[MAXBUF], char str1[MAXBUF])
         return;
     }
 
-    printf("the string is [%s]\n", tempstr);
-
     // Remove preceding spaces
     int idx = 0, j, k = 0;
     while (tempstr[idx] == ' ' || tempstr[idx] == '\t')
@@ -319,15 +298,11 @@ void printarray(char **array)
  */
 void freearray(char **array)
 {
-    printf("In freearray\n");
 
     int i = 0;
     while (array[i])
     {
-        printf("%s\n", array[i]);
-        printf("got to line 326\n");
         free(array[i]);
-        printf("In freearray, got to line 327\n");
         i++;
     }
     free(array);
