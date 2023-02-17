@@ -80,11 +80,11 @@ void testSplitSimple()
 {
     // Setup
     // Sample input line
-    char line[256] = "hello there Penny\n";
+    char line[256] = "hello there Penny";
 
     // Run
     // Tokenize user input
-    char **array = split(line, " ");
+    char **array = split(line, " ", 3);
     // Get the results
     char *outstr = getArrayAsStr(array);
 
@@ -100,10 +100,10 @@ void testSplitSimple()
 void testSplitDot()
 {
     // Sample input line
-    char line[256] = "git add .\n";
+    char line[256] = "git add .";
 
     // Tokenize user input
-    char **array = split(line, " ");
+    char **array = split(line, " ", 3);
 
     // Get the results
     char *outstr = getArrayAsStr(array);
@@ -123,7 +123,7 @@ void testEmptyString()
     char line[256] = "";
 
     // Tokenize user input
-    char **array = split(line, " ");
+    char **array = split(line, " ", 0);
 
     // Get the results
     char *outstr = getArrayAsStr(array);
@@ -143,7 +143,7 @@ void testReturnOnly()
     char line[256] = "\n";
 
     // Tokenize user input
-    char **array = split(line, " ");
+    char **array = split(line, " ", 0);
 
     // Get the results
     char *outstr = getArrayAsStr(array);
@@ -154,16 +154,46 @@ void testReturnOnly()
     return;
 }
 
+void testPath()
+{
+    char originalPath[256];
+    strcpy(originalPath, getenv("PATH"));
+
+    // Note: split modifies the string, which then changes PATH
+    // Uncomment the following to see this
+    // char *changingPath = getenv("PATH"); // path and PATH are now linked!
+    // printf("Path: %s\n", changingPath);
+    // int numtokens = getNumTokens(changingPath, ":");
+    // printf("Path after getting numtokens: %s\n", changingPath);
+    // split(changingPath, ":", numtokens); // Changes path, and thus PATH
+    // printf("Path after split: %s\n", changingPath);
+    // printf("PATH after split: %s\n", getenv("PATH"));
+
+    // Split modifies the string, which then changes PATH, so make a copy first
+    char path[256];
+    strcpy(path, getenv("PATH"));
+    // printf("Path: %s\n", path);
+    int numtokens = getNumTokens(path, ":");
+    // printf("numtokens: %d\n", numtokens);
+    // printf("Path after getting numtokens: %s\n", path);
+    split(path, ":", numtokens);
+    // printf("Path after split: %s\n", path);
+    // printf("PATH after split: %s\n", getenv("PATH"));
+    assert(strcmp(getenv("PATH"), originalPath) == 0);
+}
+
 /**
  * Main function
  * Usage: ls2 <path> [exact-match-pattern]
  */
 int main(int argc, char *argv[])
 {
-    testSplitSimple();
-    testSplitDot();
-    testEmptyString();
-    testReturnOnly();
+    testPath();
+
+    // testSplitSimple();
+    // testSplitDot();
+    // testEmptyString();
+    // testReturnOnly();
 
     return 0;
 }
