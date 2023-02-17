@@ -17,3 +17,4 @@ void printTheEcho(char **array);
 void printHistory(char **array);
 void cleanup(char str[MAXBUF], char str1[MAXBUF]);
 int executeCmd(char **array);
+int buildPathAndExecuteCmd(char **array);

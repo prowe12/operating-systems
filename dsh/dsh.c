@@ -53,9 +53,7 @@ void changeDir(char **array, int nargs)
     char *direc;
     if (nargs == 0)
     {
-        printf("Get home directory from HOME variable in environment and cd to it\n");
         direc = getenv("HOME");
-        printf("directory: %s\n", direc);
     }
     else
         direc = array[1];
@@ -87,47 +85,58 @@ void printCwd(int nargs)
     return;
 }
 
+/**
+ * Given the full path, execute the command
+ * @param array  The array holding the command and arguments
+ * @returns  0 for child pid, other for parent
+ */
 int executeCmd(char **array)
 {
-    // TODO: Work on command execution when given the full path to an executable. (Mode 1)
-    // TODO: Finally, work on execution when given just the name of an executable. (Mode 2)
-
-    printf("array[1][0] [%c]\n", array[0][0]);
     int status;
+
+    // Full path given; check if the path exists
+    if (access(array[0], F_OK | X_OK) != 0)
+    {
+        printf("dsh: no such file or directory: %s\n", array[0]);
+        return 1;
+    }
+
+    int child_pid = fork();
+    if (child_pid == 0)
+    {
+        status = execv(array[0], array);
+        if (status == -1)
+            printf("Problem with command");
+        return child_pid;
+    }
+    else
+    {
+        wait(NULL);
+        return child_pid;
+    }
+    return 1;
+}
+
+/**
+ * Use or build path to execute the command
+ * @param array  The array holding the command and arguments
+ * @returns  0 for child pid, other for parent
+ */
+int buildPathAndExecuteCmd(char **array)
+{
 
     if (array[0][0] == '/')
     {
-        // Full path given; check if the path exists
-        if (access(array[0], F_OK | X_OK) != 0)
-        {
-            printf("dsh: no such file or directory: %s\n", array[0]);
-            return 1;
-        }
-
-        int child_pid = fork();
-        if (child_pid == 0)
-        {
-            status = execv(array[0], array);
-            if (status == -1)
-                printf("Problem with command");
-            return child_pid;
-        }
-        else
-        {
-            wait(NULL);
-            return child_pid;
-        }
+        int child_pid = executeCmd(array);
+        return child_pid;
     }
-
     else
     {
         char cwd[MAXBUF];
-        printf("Find the location of the executable\n");
         // First try the working directory
         if (getcwd(cwd, sizeof(cwd)) != NULL)
         {
             int numtokens;
-            printf("Working directory is: %s\n", cwd);
             strcat(cwd, "/");
             strcat(cwd, array[0]);
             if (access(cwd, F_OK | X_OK) != 0)
@@ -136,12 +145,8 @@ int executeCmd(char **array)
                 // because it will be modified (which would then modify PATH)
                 char path[MAXBUF];
                 strcpy(path, getenv("PATH"));
-                printf("Path: %s\n", path);
                 numtokens = getNumTokens(path, ":");
-                printf("numtokens: %d\n", numtokens);
-                printf("Path after getting numtokens: %s\n", path);
                 char **paths = split(path, ":", numtokens);
-                printf("Path after split: %s\n", path);
 
                 for (int i = 0; i < numtokens; i++)
                 {
@@ -149,11 +154,11 @@ int executeCmd(char **array)
                     strcat(cwd, paths[i]);
                     strcat(cwd, "/");
                     strcat(cwd, array[0]);
-                    printf("Try path %s\n", cwd);
                     if (access(cwd, F_OK | X_OK) == 0)
                     {
-                        printf("Found path %s\n", cwd);
-                        return 1;
+                        array[0] = cwd;
+                        int child_pid = executeCmd(array);
+                        return child_pid;
                     }
                 }
                 return 1;

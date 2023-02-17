@@ -30,20 +30,15 @@ int main(int argc, char **argv)
 
 		// Remove trailing spaces and replace return at end with null character
 		cleanup(cmdlineIn, cmdline);
-		printf("After cleaning, cmdline is: [%s]\n", cmdline);
 
 		if (strlen(cmdline) == 0)
 			continue;
 
 		int numtokens = getNumTokens(cmdline, " ");
-		printf("numtokens: %d\n", numtokens);
 
 		char **array = split(cmdline, " ", numtokens);
-		printf("array[0]: %s\n", array[0]);
-		printarray(array);
-
+		// printarray(array);
 		int nargs = numtokens - 1;
-		printf("nargs: %d\n", nargs);
 
 		char *cmd = array[0];
 		if (cmd == NULL)
@@ -56,12 +51,9 @@ int main(int argc, char **argv)
 			printCwd(nargs);
 		else
 		{
-			int child_pid = executeCmd(array);
-			printf("pid: %d\n", child_pid);
+			int child_pid = buildPathAndExecuteCmd(array);
 			if (child_pid == 0)
 				break; // Child process - done!
-			else
-				printf("I am the parent of pid %d; keep going\n", child_pid);
 		}
 	}
 }
