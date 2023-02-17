@@ -153,7 +153,7 @@ int buildPathAndExecuteCmd(char **array)
                     strcat(cwd, array[0]);
                     if (access(cwd, F_OK | X_OK) == 0)
                     {
-                        array[0] = cwd;
+                        strcpy(array[0], cwd);
                         int child_pid = executeCmd(array);
                         return child_pid;
                     }
@@ -170,22 +170,6 @@ int buildPathAndExecuteCmd(char **array)
         }
     }
     return 1;
-}
-
-/**
- * Print the array
- * @params array  The array
- */
-void printarray(char **array)
-{
-
-    int i = 0;
-    while (array[i])
-    {
-        printf("%s\n", array[i]);
-        i++;
-    }
-    return;
 }
 
 /**
@@ -242,7 +226,7 @@ void cleanup(char str[MAXBUF], char str1[MAXBUF])
 
     // Remove preceding spaces
     int idx = 0, j, k = 0;
-    while (str[idx] == ' ' || str[idx] == 't')
+    while (str[idx] == ' ' || str[idx] == '\t')
     {
         idx++;
     }
@@ -281,7 +265,9 @@ char **split(char *str, char *delim, int numtokens)
     }
 
     // Create a 2d array of characters: that is, number of pointers to strings
-    char **array = (char **)malloc((numtokens + 1) * sizeof(char *));
+    // TODO: fix this
+    // char **array = (char **)malloc((numtokens + 1) * sizeof(char *));
+    char **array = (char **)malloc((256 + 1) * sizeof(char *));
 
     // Setup the token
     char *token;
@@ -289,15 +275,14 @@ char **split(char *str, char *delim, int numtokens)
     // str is searched until the delimiter is found. The first token is
     // returned and the variable assigned the result points to that token (string)
     token = strtok(str, delim);
-    int i = 0;
-    array[i] = (char *)malloc((strlen(token) + 1) * sizeof(char));
-    strcpy(array[i], token);
 
     // Loop through each array element and instantiate an array
     // of capacity cap
     for (int i = 0; i < numtokens; i++)
     {
-        array[i] = (char *)malloc((strlen(token) + 1) * sizeof(char));
+        // TODO: fix this
+        // array[i] = (char *)malloc((strlen(token) + 1) * sizeof(char));
+        array[i] = (char *)malloc((256 + 1) * sizeof(char));
         strcpy(array[i], token);
 
         // strtok maintains a static pointer to the previously passed string.
@@ -306,8 +291,44 @@ char **split(char *str, char *delim, int numtokens)
         token = strtok(NULL, delim);
     }
 
-    array[numtokens] = (char *)malloc(sizeof(char));
     array[numtokens] = NULL;
 
     return array;
+}
+
+/**
+ * Print the array
+ * @params array  The array
+ */
+void printarray(char **array)
+{
+
+    int i = 0;
+    while (array[i])
+    {
+        printf("%s\n", array[i]);
+        i++;
+    }
+    return;
+}
+
+/**
+ * Frees up the array
+ * @param array  The array
+ */
+void freearray(char **array, int numtokens)
+{
+    printf("In freearray\n");
+
+    int i = 0;
+    while (array[i])
+    {
+        printf("%s\n", array[i]);
+        printf("got to line 326\n");
+        free(array[i]);
+        printf("In freearray, got to line 327\n");
+        i++;
+    }
+    free(array);
+    return;
 }
