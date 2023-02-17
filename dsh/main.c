@@ -13,7 +13,6 @@
 #include "builtins.h"
 #include "dsh.h"
 
-// TODO after cat feelGood.c, it hangs
 // TODO: ./feelGood does nothing
 // TOOD: implement &
 // TODO: run valgrind to check for memory leaks
