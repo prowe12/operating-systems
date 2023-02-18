@@ -69,5 +69,3 @@ int main(int argc, char **argv)
 		freearray(array);
 	}
 }
-
-// gcc -Wall feelGood.c -o feelGood

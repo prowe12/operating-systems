@@ -114,55 +114,56 @@ int buildPathAndExecuteCmd(char **array, int nargs, int hasAmp)
     }
     else
     {
+        int numtokens;
         char cwd[MAXBUF];
         // First try the working directory
-        if (getcwd(cwd, sizeof(cwd)) != NULL)
-        {
-            int numtokens;
-            strcat(cwd, "/");
-            strcat(cwd, array[0]);
-            if (access(cwd, F_OK | X_OK) == 0)
-            {
-                strcpy(array[0], cwd);
-                int child_pid = executeCmd(array, hasAmp);
-                return child_pid;
-            }
-            else
-            {
-                // Try the other paths. Note that we have to copy path,
-                // because it will be modified (which would then modify PATH)
-                char path[MAXBUF];
-                strcpy(path, getenv("PATH"));
-                numtokens = getNumTokens(path, ":");
-
-                // Build an array containing the paths.  Then test each path
-                // one-by-one to see if the command is in it.
-                char **paths = split(path, ":", numtokens);
-                for (int i = 0; i < numtokens; i++)
-                {
-                    cwd[0] = '\0';
-                    strcat(cwd, paths[i]);
-                    strcat(cwd, "/");
-                    strcat(cwd, array[0]);
-                    if (access(cwd, F_OK | X_OK) == 0)
-                    {
-                        // Free up the mallocd space on the heap before leaving
-                        freearray(paths);
-                        strcpy(array[0], cwd);
-                        int child_pid = executeCmd(array, hasAmp);
-                        return child_pid;
-                    }
-                }
-                freearray(paths); // If we get here, we haven't freed the array yet!
-
-                // No paths worked, so the command is not found or did not work
-                printf("ERROR: %s not found!\n", array[0]);
-            }
-        }
-        else
+        if (getcwd(cwd, sizeof(cwd)) == NULL)
         {
             perror("getcwd() error");
             return 1;
+        }
+
+        // Build the path to the file to run from the working dir
+        strcat(cwd, "/");
+        strcat(cwd, array[0]);
+
+        // If the path exists and is executable, run it
+        if (access(cwd, F_OK | X_OK) == 0)
+        {
+            strcpy(array[0], cwd);
+            int child_pid = executeCmd(array, hasAmp);
+            return child_pid;
+        }
+        else
+        {
+            // Try the other paths. Note that we have to copy path,
+            // because it will be modified (which would then modify PATH)
+            char path[MAXBUF];
+            strcpy(path, getenv("PATH"));
+            numtokens = getNumTokens(path, ":");
+
+            // Build an array containing the paths.  Then test each path
+            // one-by-one to see if the command is in it.
+            char **paths = split(path, ":", numtokens);
+            for (int i = 0; i < numtokens; i++)
+            {
+                cwd[0] = '\0';
+                strcat(cwd, paths[i]);
+                strcat(cwd, "/");
+                strcat(cwd, array[0]);
+                if (access(cwd, F_OK | X_OK) == 0)
+                {
+                    // Free up the mallocd space on the heap before leaving
+                    freearray(paths);
+                    strcpy(array[0], cwd);
+                    int child_pid = executeCmd(array, hasAmp);
+                    return child_pid;
+                }
+            }
+            freearray(paths); // If we get here, we haven't freed the array yet!
+
+            // No paths worked, so the command is not found or did not work
+            printf("ERROR: %s not found or is not executable!\n", array[0]);
         }
     }
     return 1;
