@@ -12,6 +12,7 @@
 #include <string.h>
 #include "builtins.h"
 #include "dsh.h"
+#include "stringmanager.h"
 
 // TODO: improve overall organization
 int main(int argc, char **argv)
