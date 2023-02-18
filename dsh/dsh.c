@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include "builtins.h"
+#include "stringmanager.h"
 
 /**
  * Change the directory
