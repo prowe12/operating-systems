@@ -68,9 +68,10 @@ void printCwd(int nargs)
 /**
  * Given the full path, execute the command
  * @param array  The array holding the command and arguments
+ * @param hasAmp  Whether to wait for child to finish
  * @returns  0 for child pid, other for parent
  */
-int executeCmd(char **array)
+int executeCmd(char **array, int hasAmp)
 {
     // Full path given; check if the path exists
     if (access(array[0], F_OK | X_OK) != 0)
@@ -80,16 +81,19 @@ int executeCmd(char **array)
     }
 
     int child_pid = fork();
-    if (child_pid == 0)
+    if (child_pid != 0)
     {
-        int status = execv(array[0], array);
-        if (status == -1)
-            printf("Problem with command");
+        // parent
+        if (!hasAmp)
+            wait(NULL);
         return child_pid;
     }
     else
     {
-        wait(NULL);
+        // child - run command
+        int status = execv(array[0], array);
+        if (status == -1)
+            printf("Problem with command");
         return child_pid;
     }
     return 1;
@@ -100,15 +104,12 @@ int executeCmd(char **array)
  * @param array  The array holding the command and arguments
  * @returns  0 for child pid, other for parent
  */
-int buildPathAndExecuteCmd(char **array, int nargs)
+int buildPathAndExecuteCmd(char **array, int nargs, int hasAmp)
 {
-
-    if (strcmp(array[nargs], "&") == 0)
-        printf("array[nargs]): %s\n", array[nargs]);
 
     if (array[0][0] == '/')
     {
-        int child_pid = executeCmd(array);
+        int child_pid = executeCmd(array, hasAmp);
         return child_pid;
     }
     else
@@ -123,7 +124,7 @@ int buildPathAndExecuteCmd(char **array, int nargs)
             if (access(cwd, F_OK | X_OK) == 0)
             {
                 strcpy(array[0], cwd);
-                int child_pid = executeCmd(array);
+                int child_pid = executeCmd(array, hasAmp);
                 return child_pid;
             }
             else
@@ -148,13 +149,13 @@ int buildPathAndExecuteCmd(char **array, int nargs)
                         // Free up the mallocd space on the heap before leaving
                         freearray(paths);
                         strcpy(array[0], cwd);
-                        int child_pid = executeCmd(array);
+                        int child_pid = executeCmd(array, hasAmp);
                         return child_pid;
                     }
                 }
                 freearray(paths); // If we get here, we haven't freed the array yet!
 
-                // No paths worked, so the command is not found
+                // No paths worked, so the command is not found or did not work
                 printf("ERROR: %s not found!\n", array[0]);
             }
         }
@@ -191,6 +192,49 @@ int getNumTokens(char *str, char *delim)
     return numtokens;
 }
 
+// TODO: conform to David's suggested style for the out var here and below
+/**
+ * Remove trailing spaces
+ *  @param moddedStr (OUT)
+ */
+void removeTrailingSpaces(char *moddedStr)
+{
+    int i = strlen(moddedStr) - 1; // subtract 1 to get index
+    while (i >= 0 && moddedStr[i] == ' ')
+        i--;
+    moddedStr[i + 1] = '\0'; // Put null at end of string
+}
+
+/**
+ * Remove trailing spaces
+ * @param moddedStr (OUT)
+ */
+void removeTrailingReturn(char *moddedStr)
+{
+    int i = strlen(moddedStr) - 1; // subtract 1 to get index
+    if (moddedStr[i] != '\n')
+        perror("String did not end with return as expected!");
+    moddedStr[i] = '\0';
+    return;
+}
+
+/**
+ * Remove trailing spaces
+ * @param moddedStr (OUT)
+ */
+int removeAmp(char *moddedStr)
+{
+    int hasAmp = 0;
+    if (moddedStr[strlen(moddedStr) - 1] == '&')
+    {
+        // & found at end! Remove the & along with any trailing spaces
+        hasAmp = 1;
+        moddedStr[strlen(moddedStr) - 1] = '\0';
+        removeTrailingSpaces(moddedStr);
+    }
+    return hasAmp;
+}
+
 /**
  * Remove trailing return and leading and trailing spaces
  * @param str  The original string
@@ -198,21 +242,22 @@ int getNumTokens(char *str, char *delim)
  * Note: Code for removal of leading spaces from
  * https://www.geeksforgeeks.org/c-program-to-trim-leading-white-spaces-from-string/
  */
-void cleanup(char str[MAXBUF], char str1[MAXBUF])
+int cleanup(char str[MAXBUF], char str1[MAXBUF])
 {
     char tempstr[MAXBUF];
     strcpy(tempstr, str);
 
     // Remove final return and trailing spaces
-    int i = strlen(tempstr) - 1; // subtract 1 to get index
-    while (i >= 0 && tempstr[i] == ' ')
-        i--;
-    tempstr[i] = '\0'; // Put null at end of string
+    removeTrailingReturn(tempstr);
+    removeTrailingSpaces(tempstr);
+
+    // Remove & at end, if present, and return whether one was found
+    int hasAmp = removeAmp(tempstr);
 
     if (strlen(tempstr) < 1)
     {
         strcpy(str1, "\0");
-        return;
+        return hasAmp;
     }
 
     // Remove preceding spaces
@@ -221,7 +266,6 @@ void cleanup(char str[MAXBUF], char str1[MAXBUF])
     {
         idx++;
     }
-
     for (j = idx; tempstr[j] != '\0'; j++)
     {
         str1[k] = tempstr[j];
@@ -229,7 +273,8 @@ void cleanup(char str[MAXBUF], char str1[MAXBUF])
     }
     str1[k] = '\0';
 
-    return;
+    // Return whether there is an & at the end
+    return hasAmp;
 }
 
 /**

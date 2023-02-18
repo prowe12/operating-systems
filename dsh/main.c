@@ -30,8 +30,9 @@ int main(int argc, char **argv)
 		printf("dsh> ");
 		fgets(cmdlineIn, MAXBUF, stdin); // read up to 256 chars into buffer
 
-		// Remove trailing spaces and replace return at end with null character
-		cleanup(cmdlineIn, cmdline);
+		// Replace return at end with null character, check for trailing &,
+		// and remove trailing spaces. Return whether there was an & at the end
+		int hasAmp = cleanup(cmdlineIn, cmdline);
 
 		if (strlen(cmdline) < 1)
 			continue;
@@ -58,7 +59,7 @@ int main(int argc, char **argv)
 			printCwd(nargs);
 		else
 		{
-			int child_pid = buildPathAndExecuteCmd(array, nargs);
+			int child_pid = buildPathAndExecuteCmd(array, nargs, hasAmp);
 			if (child_pid == 0)
 			{
 				freearray(array);
@@ -68,3 +69,5 @@ int main(int argc, char **argv)
 		freearray(array);
 	}
 }
+
+// gcc -Wall feelGood.c -o feelGood
