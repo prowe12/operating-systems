@@ -193,7 +193,6 @@ int getNumTokens(char *str, char *delim)
     return numtokens;
 }
 
-// TODO: conform to David's suggested style for the out var here and below
 /**
  * Remove trailing spaces
  *  @param moddedStr (OUT)
@@ -288,7 +287,6 @@ int cleanup(char str[MAXBUF], char str1[MAXBUF])
 char **split(char *str, char *delim, int numtokens)
 {
     // Check for NULL pointer
-    // TODO: what is the use case?  How do I test this?
     if (str == NULL)
         return NULL;
 
@@ -302,8 +300,7 @@ char **split(char *str, char *delim, int numtokens)
     }
 
     // Create a 2d array of characters: that is, number of pointers to strings
-    // TODO: fix this
-    char **array = (char **)malloc(256 * (numtokens + 1) * sizeof(char *));
+    char **array = (char **)malloc(MAXBUF * (numtokens + 1) * sizeof(char *));
 
     // Setup the token
     char *token;
@@ -316,8 +313,7 @@ char **split(char *str, char *delim, int numtokens)
     // of capacity cap
     for (int i = 0; i < numtokens; i++)
     {
-        // TODO: fix following
-        array[i] = (char *)malloc((256 + 1) * sizeof(char));
+        array[i] = (char *)malloc((MAXBUF + 1) * sizeof(char));
         strcpy(array[i], token);
 
         // strtok maintains a static pointer to the previously passed string.

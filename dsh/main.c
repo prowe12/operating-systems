@@ -13,8 +13,6 @@
 #include "builtins.h"
 #include "dsh.h"
 
-// TOOD: implement &
-// TODO: run valgrind to check for memory leaks
 // TODO: improve overall organization
 int main(int argc, char **argv)
 {
