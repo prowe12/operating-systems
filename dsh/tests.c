@@ -170,10 +170,9 @@ int main(int argc, char *argv[])
 {
     testFree();
     testPath();
-    testSplitSimple(); // malloc(): invalid size (unsorted)
-    testSplitDot();    // tests: tests.c:115: testSplitDot: Assertion `strcmp(outstr, "git add .\n") == 0' failed.
-    testEmptyString(); // tests: tests.c:135: testEmptyString: Assertion `strcmp(outstr, "") == 0' failed.
-    testReturnOnly();  // tests: tests.c:155: testReturnOnly: Assertion `strcmp(outstr, "") == 0' failed.
-
+    testSplitSimple();
+    testSplitDot();
+    testEmptyString();
+    testReturnOnly();
     return 0;
 }
