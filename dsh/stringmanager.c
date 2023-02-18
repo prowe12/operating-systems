@@ -27,6 +27,9 @@ int getNumTokens(char *str, char *delim)
         if (str[i] == delim[0])
         {
             numtokens++; // Increment for each delimiter
+            // Skip remaining delimiters and position index at next different character
+            while (str[i + 1] == delim[0])
+                i++;
         }
         i++;
     }
