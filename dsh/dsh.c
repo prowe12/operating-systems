@@ -100,8 +100,11 @@ int executeCmd(char **array)
  * @param array  The array holding the command and arguments
  * @returns  0 for child pid, other for parent
  */
-int buildPathAndExecuteCmd(char **array)
+int buildPathAndExecuteCmd(char **array, int nargs)
 {
+
+    if (strcmp(array[nargs], "&") == 0)
+        printf("array[nargs]): %s\n", array[nargs]);
 
     if (array[0][0] == '/')
     {

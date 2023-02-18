@@ -13,7 +13,6 @@
 #include "builtins.h"
 #include "dsh.h"
 
-// TODO: ./feelGood does nothing
 // TOOD: implement &
 // TODO: run valgrind to check for memory leaks
 // TODO: improve overall organization
@@ -59,7 +58,7 @@ int main(int argc, char **argv)
 			printCwd(nargs);
 		else
 		{
-			int child_pid = buildPathAndExecuteCmd(array);
+			int child_pid = buildPathAndExecuteCmd(array, nargs);
 			if (child_pid == 0)
 			{
 				freearray(array);
