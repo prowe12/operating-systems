@@ -3,6 +3,9 @@
  *
  *  Created on: Feb. 13, 2023
  *      Author: Penny
+ *
+ * Note:
+ * valgrind --leak-check=full ./memtest
  */
 #include <stdio.h>
 #include <string.h>
@@ -12,65 +15,30 @@
 
 /**
  * Helper function:
- * Concatenates input strings into a single string.
- * Returns the pointer to the resulting string.
- * The string memory is allocated with malloc(),
- * so the caller must release it using free().
- * The input string array must have NULL as last element.
- * If the input string array pointer is NULL,
- * NULL is returned.
- * On memory allocation error, NULL is returned.
- * From https://stackoverflow.com/questions/23130203/create-string-from-array-of-strings-in-c
+ * Appends input strings into a single string.
+ * @params strings  The array of strings
+ * @params outstr  The appended string
  */
-char *getArrayAsStr(char **strings)
+void getArrayAsStr(char **strings, char outstr[])
 {
-    int i = 0;           /* Loop index               */
-    int count = 0;       /* Count of input strings   */
-    char *result = NULL; /* Result string            */
-    int totalLength = 0; /* Length of result string  */
-
     /* Check special case of NULL input pointer. */
     if (strings == NULL)
-    {
-        return NULL;
-    }
+        return;
 
-    /*
-     * Iterate through the input string array,
-     * calculating total required length for destination string.
-     * Get the total string count, too.
-     */
+    int i = 0;
+
+    // Reinitialize and build up the string
+    strcpy(outstr, "");
     while (strings[i] != NULL)
     {
-        totalLength += strlen(strings[i]);
+        strcat(outstr, strings[i]);
+        strcat(outstr, " ");
         i++;
     }
-    count = i;
-    totalLength++; /* Consider NUL terminator. */
 
-    /*
-     * Allocate memory for the destination string.
-     */
-    result = malloc(sizeof(char) * totalLength);
-    if (result == NULL)
-    {
-        /* Memory allocation failed. */
-        return NULL;
-    }
-
-    /*
-     * Concatenate the input strings.
-     */
-    for (i = 0; i < count; i++)
-    {
-        strcat(result, strings[i]);
-        if (i < count - 1)
-            strcat(result, " ");
-        else
-            strcat(result, "\n");
-    }
-
-    return result;
+    // Remove final space
+    outstr[strlen(outstr) - 1] = '\0';
+    return;
 }
 
 /**
@@ -86,11 +54,12 @@ void testSplitSimple()
     // Tokenize user input
     char **array = split(line, " ", 3);
     // Get the results
-    char *outstr = getArrayAsStr(array);
+    char outstr[256];
+    getArrayAsStr(array, outstr);
+    free(array);
 
     // Assert
-    assert(strcmp(outstr, "hello there Penny\n") == 0);
-    free(outstr);
+    assert(strcmp(outstr, "hello there Penny") == 0);
     return;
 }
 
@@ -106,11 +75,12 @@ void testSplitDot()
     char **array = split(line, " ", 3);
 
     // Get the results
-    char *outstr = getArrayAsStr(array);
+    char outstr[256];
+    getArrayAsStr(array, outstr);
+    free(array);
 
     // Assert
-    assert(strcmp(outstr, "git add .\n") == 0);
-    free(outstr);
+    assert(strcmp(outstr, "git add .") == 0);
     return;
 }
 
@@ -126,11 +96,12 @@ void testEmptyString()
     char **array = split(line, " ", 0);
 
     // Get the results
-    char *outstr = getArrayAsStr(array);
+    char outstr[256];
+    getArrayAsStr(array, outstr);
 
-    // // Assert
+    // Assert
     assert(strcmp(outstr, "") == 0);
-    free(outstr);
+    // free(outstr);
     return;
 }
 
@@ -146,11 +117,12 @@ void testReturnOnly()
     char **array = split(line, " ", 0);
 
     // Get the results
-    char *outstr = getArrayAsStr(array);
+    char outstr[256];
+    getArrayAsStr(array, outstr);
 
-    // // Assert
+    // Assert
     assert(strcmp(outstr, "") == 0);
-    free(outstr);
+    free(array);
     return;
 }
 
@@ -189,21 +161,19 @@ void testFree()
     array[i] = (char *)malloc((256 + 1) * sizeof(char));
     free(array[0]);
     free(array);
-    printf("Success\n");
 }
 
 /**
  * Main function
- * Usage: ls2 <path> [exact-match-pattern]
  */
 int main(int argc, char *argv[])
 {
-    // testFree();
-    // testPath();
-    // testSplitSimple();
-    // testSplitDot();
-    // testEmptyString();
-    // testReturnOnly();
+    testFree();
+    testPath();
+    testSplitSimple(); // malloc(): invalid size (unsorted)
+    testSplitDot();    // tests: tests.c:115: testSplitDot: Assertion `strcmp(outstr, "git add .\n") == 0' failed.
+    testEmptyString(); // tests: tests.c:135: testEmptyString: Assertion `strcmp(outstr, "") == 0' failed.
+    testReturnOnly();  // tests: tests.c:155: testReturnOnly: Assertion `strcmp(outstr, "") == 0' failed.
 
     return 0;
 }
