@@ -2,7 +2,7 @@
  * main.c
  *
  *  Created on: Mar 17 2017
- *      Author: david
+ *      Author: david and prowe
  */
 
 #include <stdio.h>
@@ -14,7 +14,6 @@
 #include "dsh.h"
 #include "stringmanager.h"
 
-// TODO: improve overall organization
 int main(int argc, char **argv)
 {
 	char cmdlineIn[MAXBUF]; // stores user input from commmand line
@@ -24,13 +23,13 @@ int main(int argc, char **argv)
 	// Main command-prompt loop that repeatedly accepts input
 	while (1)
 	{
-
 		// Print the prompt, then get and split user input
 		printf("dsh> ");
 		fgets(cmdlineIn, MAXBUF, stdin); // read up to 256 chars into buffer
 
 		// Replace return at end with null character, check for trailing &,
-		// and remove trailing spaces. Return whether there was an & at the end
+		// and remove leading and trailing spaces. Return whether there
+		// was an & at the end
 		int hasAmp = cleanup(cmdlineIn, cmdline);
 
 		if (strlen(cmdline) < 1)
