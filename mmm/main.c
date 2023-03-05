@@ -41,29 +41,65 @@ int strToInt(char *inputStr)
 	return num;
 }
 
-int getSize(int argc, char *argv[])
+int getSize(char *sizeStr)
 {
-	int size = 0;
-	if (argc == 2)
-		size = strToInt(argv[1]);
-	else if (argc == 3)
-		size = strToInt(argv[2]);
-	else
-		badNumberInputs();
+	printf("In getSize\n");
+	int size = strToInt(sizeStr);
 	return size;
 }
 
-int getNthreads(int argc, char *argv[])
+int getRunType(char *runTypeStr)
 {
-	int nthreads = 0;
-	if (argc == 2)
-		nthreads = 1;
-	else if (argc == 3)
-		nthreads = strToInt(argv[1]);
+	if (strlen(runTypeStr) == 1 && *runTypeStr == 'S')
+		return 0;
+	else if (strlen(runTypeStr) == 1 && *runTypeStr == 'P')
+		return 1;
 	else
-		badNumberInputs();
+	{
+		printf("The type of run must be S for single or P for Parallel\n");
+		exit(EXIT_FAILURE);
+	}
+	return -1;
+}
 
+int getNthreads(char *sizeStr)
+{
+	printf("In getNthreads \n");
+	int nthreads = strToInt(sizeStr);
 	return nthreads;
+}
+
+void parseInputs(char *buf, int argc, char *argv[])
+{
+	// Get and QC number of inputs, where the possible run commands are:
+	if (argc != 3 && argc != 4)
+	{
+		badNumberInputs();
+		return;
+	}
+
+	int runType = getRunType(argv[1]);
+	int nthreads = 0;
+	int size = 0;
+	if (runType == 0 && argc == 3)
+	{
+		nthreads = 1;
+		size = getSize(argv[2]);
+	}
+	else if (runType == 1 && argc == 4)
+	{
+		nthreads = getNthreads(argv[2]);
+		size = getSize(argv[3]);
+	}
+	else
+	{
+		badNumberInputs();
+		return;
+	}
+	buf[0] = nthreads;
+	buf[1] = size;
+	buf[2] = 0;
+	return;
 }
 
 int main(int argc, char *argv[])
@@ -71,9 +107,15 @@ int main(int argc, char *argv[])
 	// Command Line call
 	// $ ./mmm S <size>
 	// $ ./mmm P <threads> <size>
-	int nthreads = getNthreads(argc, argv);
-	int size = getSize(argc, argv);
 
+	// Get the inputs
+	char inputs[3] = {0};
+	parseInputs(inputs, argc, argv);
+	int nthreads = inputs[0];
+	int size = inputs[1];
+	int runtype = inputs[2];
+
+	printf("Type of run (0=>single, 1=>parallel): %d\n", runtype);
 	printf("nthreads = %d\n", nthreads);
 	printf("size = %d\n", size);
 
