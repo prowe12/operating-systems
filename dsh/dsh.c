@@ -28,7 +28,7 @@ void changeDir(char **array, int nargs)
 {
     if (nargs > 1)
     {
-        printf("cd: too many arguments");
+        printf("cd: too many arguments\n");
         return;
     }
 
