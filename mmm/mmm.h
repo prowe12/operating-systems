@@ -8,7 +8,7 @@ extern int **mat1, **mat2, **mat3;
 extern int matdim;
 
 void mmm_init();
-void mmm_reset(double **);
+void mmm_reset(int **);
 void mmm_freeup();
 void mmm_seq();
 void *mmm_par(void *args);
