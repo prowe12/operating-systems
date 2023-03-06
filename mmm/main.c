@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 	// Initialze the matrices
 	mmm_init();
 
+	// TODO: remove this line
 	mmm_print();
 
 	double clockstart, clockend;
@@ -45,6 +46,9 @@ int main(int argc, char *argv[])
 
 	clockend = rtclock(); // stop clocking
 	printf("Time taken: %.6f sec\n", (clockend - clockstart));
+
+	// Freeup the array
+	mmm_freeup();
 
 	return 0;
 }
