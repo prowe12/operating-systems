@@ -8,6 +8,9 @@
 #include "mmm.h"
 #include "parseInputs.h"
 
+// Note: how to use valgrind
+// valgrind --leak-check=full ./mmm
+
 void setToTestVals()
 {
     for (int j = 0; j < matdim; j++)
