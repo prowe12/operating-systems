@@ -17,6 +17,10 @@ int matdim;
  */
 void mmm_init()
 {
+	// Intialize random number generator
+	time_t t;
+	srand((unsigned)time(&t));
+
 	// malloc a size N array of pointers to ints
 	mat1 = (int **)malloc(sizeof(int *) * matdim);
 	mat2 = (int **)malloc(sizeof(int *) * matdim);
@@ -35,9 +39,9 @@ void mmm_init()
 	for (int i = 0; i < matdim; i++)
 		for (int j = 0; j < matdim; j++)
 		{
-			mat1[i][j] = 0;
-			mat2[i][j] = 1;
-			mat3[i][j] = 2;
+			mat1[i][j] = rand() % 100;
+			mat2[i][j] = rand() % 100;
+			mat3[i][j] = rand() % 100;
 		}
 
 	return;
@@ -58,7 +62,26 @@ void mmm_reset(double **matrix)
  */
 void mmm_freeup()
 {
-	// TODO
+	// free each row
+	for (int i = 0; i < matdim; i++)
+	{
+		// Free ith rwo
+		free(mat1[i]);
+		free(mat2[i]);
+		free(mat3[i]);
+		// remove dangling pointers
+		mat1[i] = NULL;
+		mat2[i] = NULL;
+		mat3[i] = NULL;
+	}
+	// free original arrays
+	free(mat1);
+	free(mat2);
+	free(mat3);
+	// remove dangling pointers
+	mat1 = NULL;
+	mat2 = NULL;
+	mat2 = NULL;
 	return;
 }
 
