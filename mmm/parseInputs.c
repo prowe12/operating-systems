@@ -94,6 +94,23 @@ void parseInputs(int *buf, int argc, char *argv[])
         badNumberInputs();
         return;
     }
+
+    // QC on number of threads
+    if (nthreads <= 0)
+    {
+        printf("You must have at least one thread.\n");
+        badNumberInputs();
+        return;
+    }
+
+    // QC on size
+    if (size <= 0)
+    {
+        printf("Your matrices must have positive dimensions.\n");
+        badNumberInputs();
+        return;
+    }
+
     buf[0] = runType;
     buf[1] = nthreads;
     buf[2] = size;

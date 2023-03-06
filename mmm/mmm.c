@@ -9,7 +9,7 @@
 #include <math.h> // fmax
 #include "mmm.h"
 
-int **mat1, **mat2, **mat3, **mat4;
+double **mat1, **mat2, **mat3, **mat4;
 int matdim;
 
 /**
@@ -23,18 +23,18 @@ void mmm_init()
 	srand((unsigned)time(&t));
 
 	// malloc a size N array of pointers to ints
-	mat1 = (int **)malloc(sizeof(int *) * matdim);
-	mat2 = (int **)malloc(sizeof(int *) * matdim);
-	mat3 = (int **)malloc(sizeof(int *) * matdim); // for mat1 x mat2, seq
-	mat4 = (int **)malloc(sizeof(int *) * matdim); // for mat1 x mat2, par
+	mat1 = (double **)malloc(sizeof(double *) * matdim);
+	mat2 = (double **)malloc(sizeof(double *) * matdim);
+	mat3 = (double **)malloc(sizeof(double *) * matdim); // for mat1 x mat2, seq
+	mat4 = (double **)malloc(sizeof(double *) * matdim); // for mat1 x mat2, par
 
 	// iterate through each row and malloc a size N array of ints
 	for (int i = 0; i < matdim; i++)
 	{
-		mat1[i] = (int *)malloc(sizeof(int) * matdim);
-		mat2[i] = (int *)malloc(sizeof(int) * matdim);
-		mat3[i] = (int *)malloc(sizeof(int) * matdim);
-		mat4[i] = (int *)malloc(sizeof(int) * matdim);
+		mat1[i] = (double *)malloc(sizeof(double) * matdim);
+		mat2[i] = (double *)malloc(sizeof(double) * matdim);
+		mat3[i] = (double *)malloc(sizeof(double) * matdim);
+		mat4[i] = (double *)malloc(sizeof(double) * matdim);
 	}
 
 	// Populate the array with random numbers
@@ -56,7 +56,7 @@ void mmm_init()
  * Reset a given matrix to zeroes
  * @param matrix pointer to a 2D array
  */
-void mmm_reset(int **matrix)
+void mmm_reset(double **matrix)
 {
 	for (int i = 0; i < matdim; i++)
 		for (int j = 0; j < matdim; j++)
@@ -104,14 +104,15 @@ void mmm_seq()
 
 	// TODO: is there a faster way?
 	// Zero out mat3
-	mmm_reset(mat3);
+	// mmm_reset(mat3);
 
 	// Loop over rows of mat1
 	for (int i = 0; i < matdim; i++)
 	{
 		for (int j = 0; j < matdim; j++)
 		{
-			for (int k = 0; k < matdim; k++)
+			mat3[i][j] = mat1[i][0] * mat2[0][j];
+			for (int k = 1; k < matdim; k++)
 			{
 				mat3[i][j] += mat1[i][k] * mat2[k][j];
 			}
@@ -165,13 +166,13 @@ double mmm_verify()
 /**
  * Print a matrix
  */
-void mmm_print1(int **array)
+void mmm_print1(double **array)
 {
 	for (int i = 0; i < matdim; i++)
 	{
 		for (int j = 0; j < matdim; j++)
 		{
-			printf("%d ", array[i][j]);
+			printf("%f ", array[i][j]);
 		}
 		printf("\n");
 	}
