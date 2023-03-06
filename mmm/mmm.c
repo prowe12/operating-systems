@@ -1,3 +1,6 @@
+/**
+ * By Penny Rowe using starter code from dchiu
+ */
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
@@ -5,41 +8,76 @@
 #include <stdio.h>
 #include "mmm.h"
 
+int **mat1, **mat2, **mat3;
+int matdim;
+
 /**
  * Allocate and initialize the matrices on the heap. Populate
  * the input matrices with random integers from 0 to 99
  */
-void mmm_init() {
-	// TODO
+void mmm_init()
+{
+	// malloc a size N array of pointers to ints
+	mat1 = (int **)malloc(sizeof(int *) * matdim);
+	mat2 = (int **)malloc(sizeof(int *) * matdim);
+	mat3 = (int **)malloc(sizeof(int *) * matdim);
+
+	// iterate through each row and malloc a size N array of ints
+	for (int i = 0; i < matdim; i++)
+	{
+		mat1[i] = (int *)malloc(sizeof(int) * matdim);
+		mat2[i] = (int *)malloc(sizeof(int) * matdim);
+		mat3[i] = (int *)malloc(sizeof(int) * matdim);
+	}
+
+	// Populate the array with dummy values for now
+	// TODO: Use random numbers
+	for (int i = 0; i < matdim; i++)
+		for (int j = 0; j < matdim; j++)
+		{
+			mat1[i][j] = 0;
+			mat2[i][j] = 1;
+			mat3[i][j] = 2;
+		}
+
+	return;
 }
 
 /**
  * Reset a given matrix to zeroes
  * @param matrix pointer to a 2D array
  */
-void mmm_reset(double **matrix) {
+void mmm_reset(double **matrix)
+{
 	// TODO
+	return;
 }
 
 /**
  * Free up memory allocated to all matrices
  */
-void mmm_freeup() {
+void mmm_freeup()
+{
 	// TODO
+	return;
 }
 
 /**
  * Sequential MMM
  */
-void mmm_seq() {
+void mmm_seq()
+{
 	// TODO - code to perform sequential MMM
+	return;
 }
 
 /**
  * Parallel MMM
  */
-void *mmm_par(void *args) {
+void *mmm_par(void *args)
+{
 	// TODO - code to perform parallel MMM
+	return NULL;
 }
 
 /**
@@ -49,7 +87,40 @@ void *mmm_par(void *args) {
  * @return the largest error between two corresponding elements
  * in the result matrices
  */
-double mmm_verify() {
+double mmm_verify()
+{
 	// TODO
 	return -1;
+}
+
+/**
+ * Print a matrix
+ */
+void mmm_print1(int **array)
+{
+	for (int i = 0; i < matdim; i++)
+	{
+		for (int j = 0; j < matdim; j++)
+		{
+			printf("%d ", array[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+/**
+ * Print the matrices
+ */
+void mmm_print()
+{
+	printf("\nmatrix 1:\n");
+	mmm_print1(mat1);
+
+	printf("\nmatrix 2:\n");
+	mmm_print1(mat2);
+
+	printf("\nmatrix 3:\n");
+	mmm_print1(mat3);
+
+	return;
 }
