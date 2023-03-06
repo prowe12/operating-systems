@@ -10,8 +10,7 @@
 
 void badNumberInputs()
 {
-    printf("Usage: ./mmm S <size> or \n");
-    printf("./mmm P <threads> <size> \n");
+    printf("Usage: ./mmmSol <mode> [num threads] <size>\n");
     exit(EXIT_FAILURE);
     return;
 }
