@@ -80,17 +80,11 @@ int main(int argc, char *argv[])
 		// allocate space to hold threads
 		pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
 		for (int i = 0; i < nthreads; i++)
-		{
 			pthread_create(&threads[i], NULL, mmm_par, &args[i]);
-		}
 
-		/** JOIN PHASE **/
-		// TODO: need to combine results!
-		// wait for threads to finish
+		// Wait for threads to finish, then join
 		for (int i = 0; i < nthreads; i++)
-		{
 			pthread_join(threads[i], NULL);
-		}
 
 		// clean up dynamically allocated memory
 		free(threads);
