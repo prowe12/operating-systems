@@ -1,13 +1,11 @@
 #ifndef PARSEINPUTS_H_
 #define PARSEINPUTS_H_
 
-void mmm_init();
-void mmm_reset(double **);
-void mmm_freeup();
-void mmm_seq();
-void *mmm_par(void *args);
-double mmm_verify();
-void mmm_print();
-void mmm_print1(int **array);
+void badNumberInputs();
+int strToInt(char *inputStr);
+int getSize(char *sizeStr);
+int getRunType(char *runTypeStr);
+int getNthreads(char *sizeStr);
+void parseInputs(char *buf, int argc, char *argv[]);
 
 #endif /* PARSEINPUTS_H_ */
