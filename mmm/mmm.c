@@ -48,31 +48,18 @@ void mmm_init()
 	return;
 }
 
-void setToTestVals()
-{
-	for (int j = 0; j < matdim; j++)
-	{
-		mat1[0][j] = 1;
-		mat1[1][j] = 2;
-		mat1[2][j] = 3;
-	}
-	for (int i = 0; i < matdim; i++)
-	{
-		mat2[i][0] = 1;
-		mat2[i][1] = 2;
-		mat2[i][2] = 3;
-	}
-
-	return;
-}
-
 /**
  * Reset a given matrix to zeroes
  * @param matrix pointer to a 2D array
  */
-void mmm_reset(double **matrix)
+void mmm_reset(int **matrix)
 {
-	// TODO
+	for (int i = 0; i < matdim; i++)
+		for (int j = 0; j < matdim; j++)
+		{
+			// Set this back to 100
+			matrix[i][j] = 0;
+		}
 	return;
 }
 
@@ -109,9 +96,9 @@ void mmm_freeup()
  */
 void mmm_seq()
 {
-	// TODO - code to perform sequential MMM
-	// TODO: delete these lines
-	printf("In mmm_seq\n");
+
+	// Zero out mat3
+	mmm_reset(mat3);
 
 	// Loop over rows of mat1
 	for (int i = 0; i < matdim; i++)
@@ -135,7 +122,7 @@ void mmm_seq()
 void *mmm_par(void *args)
 {
 	// TODO - code to perform parallel MMM
-	// TODO: delete this line
+	// TODO: delete these line
 	printf("In mmm_par\n");
 	return NULL;
 }
