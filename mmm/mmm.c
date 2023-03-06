@@ -153,10 +153,10 @@ void *mmm_par(void *args)
  * @return the largest error between two corresponding elements
  * in the result matrices
  */
-double mmm_verify()
+float mmm_verify()
 {
 	// Compare matrix 3 (sequential) to matrix 4 (parallel)
-	double maxerr = 0;
+	float maxerr = 0;
 	for (int i = 0; i < matdim; i++)
 		for (int j = 0; j < matdim; j++)
 			maxerr = fmax(maxerr, fabs(mat3[i][j] - mat4[i][j]));

@@ -11,9 +11,6 @@
 
 void run_mmm_par(int nthreads, int matdim)
 {
-	// Zero out mat4
-	mmm_reset(mat4);
-
 	// prepare thread arguments
 	thread_args *args = (thread_args *)malloc(nthreads * sizeof(thread_args));
 
@@ -38,9 +35,7 @@ void run_mmm_par(int nthreads, int matdim)
 		args[i].last = count + nrows;
 		nrowsdone += nrows;
 		count += nrows;
-		// printf("rows for thread: %d, first: %ld, last: %ld\n", nrows, args[i].first, args[i].last);
 	}
-	// printf("rows done: %d\n", nrowsdone);
 
 	// allocate space to hold threads
 	pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
@@ -60,8 +55,6 @@ void run_mmm_par(int nthreads, int matdim)
 
 int main(int argc, char *argv[])
 {
-	// TODO list
-	// matrices int or double?
 
 	// Command Line call
 	// $ ./mmm S <size>
@@ -70,9 +63,6 @@ int main(int argc, char *argv[])
 	// Get the inputs
 	int inputs[3] = {0};
 	parseInputs(inputs, argc, argv);
-
-	// TODO: remove following block
-	// int inputs[3] = {1, 3, 4};
 
 	// The variables
 	int runtype = inputs[0];
@@ -95,9 +85,6 @@ int main(int argc, char *argv[])
 
 	// Initialze the matrices
 	mmm_init();
-
-	// TODO: remove this line
-	// mmm_print();
 
 	double clockstart, clockend;
 
@@ -128,18 +115,12 @@ int main(int argc, char *argv[])
 		float parTime = (clockend - clockstart) / nruns;
 
 		// Get maximum error between matrix for sequential and for parallel
-		int maxerr = mmm_verify();
+		float maxerr = mmm_verify();
 
 		printf("Parallel Time (avg of 3 runs): %.6f sec\n", parTime);
 		printf("Speedup: %.6f\n", (seqTime / parTime));
-		printf("Verifying... largest error between parallel and sequential matrix: %d\n", maxerr);
+		printf("Verifying... largest error between parallel and sequential matrix: %f\n", maxerr);
 	}
-
-	// TODO: delete all this
-	// printf("mat3:\n");
-	// mmm_print1(mat3);
-	// printf("mat4:\n");
-	// mmm_print1(mat4);
 
 	// Freeup the arrays
 	mmm_freeup();

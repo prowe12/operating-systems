@@ -103,6 +103,13 @@ void parseInputs(int *buf, int argc, char *argv[])
         return;
     }
 
+    if (nthreads > size)
+    {
+        printf("Number of threads must be <= size.\n");
+        badNumberInputs();
+        return;
+    }
+
     // QC on size
     if (size <= 0)
     {
