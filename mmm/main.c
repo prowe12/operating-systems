@@ -109,15 +109,26 @@ int main(int argc, char *argv[])
 	// $ ./mmm P <threads> <size>
 
 	// Get the inputs
-	char inputs[3] = {0};
-	parseInputs(inputs, argc, argv);
+	// int inputs[3] = {0};
+	// TODO: uncomment following block
+	// parseInputs(inputs, argc, argv);
+
+	// TODO: remove following block
+	int inputs[3] = {1, 3, 0};
+
+	// The variables
 	int nthreads = inputs[0];
-	int size = inputs[1];
 	int runtype = inputs[2];
+	matdim = inputs[1];
 
 	printf("Type of run (0=>single, 1=>parallel): %d\n", runtype);
 	printf("nthreads = %d\n", nthreads);
-	printf("size = %d\n", size);
+	printf("size = %d\n", matdim);
+
+	// Initialze the matrices
+	mmm_init();
+
+	mmm_print();
 
 	double clockstart, clockend;
 	clockstart = rtclock(); // start clocking
