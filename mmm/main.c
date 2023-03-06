@@ -14,33 +14,21 @@ void run_mmm_par(int nthreads, int matdim)
 	// prepare thread arguments
 	thread_args *args = (thread_args *)malloc(nthreads * sizeof(thread_args));
 
-	// TODO: do this, or change command line requirements?
-	// If there are more threads than there are rows, dial back nthreads
-	if (nthreads > matdim)
-	{
-		printf("Dialing back number of threads from %d to %d to stay <= matrix size\n", nthreads, matdim);
-		nthreads = matdim;
-	}
 	// Get the number of rows per thread
-	// int rows_per_thread, rem;
-	// printf("number of rows: %d\n", matdim);
 	int nrows;
 	int nrowsdone = 0;
-	int count = 0;
-	for (int i = 0; i < nthreads; i++)
-	{
-		nrows = (int)ceil((float)(matdim - nrowsdone) / (nthreads - i));
-		args[i].tid = i;
-		args[i].first = count;
-		args[i].last = count + nrows;
-		nrowsdone += nrows;
-		count += nrows;
-	}
 
 	// allocate space to hold threads
 	pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
 	for (int i = 0; i < nthreads; i++)
+	{
+		nrows = (int)ceil((float)(matdim - nrowsdone) / (nthreads - i));
+		args[i].tid = i;
+		args[i].first = nrowsdone;
+		args[i].last = nrowsdone + nrows;
+		nrowsdone += nrows;
 		pthread_create(&threads[i], NULL, mmm_par, &args[i]);
+	}
 
 	// Wait for threads to finish, then join
 	for (int i = 0; i < nthreads; i++)
