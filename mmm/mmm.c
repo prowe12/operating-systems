@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h> // fmax
 #include "mmm.h"
 
 int **mat1, **mat2, **mat3, **mat4;
@@ -40,8 +41,7 @@ void mmm_init()
 	for (int i = 0; i < matdim; i++)
 		for (int j = 0; j < matdim; j++)
 		{
-			// TODO: Set this back to 100
-			int maxval = 10;
+			int maxval = 100;
 			mat1[i][j] = rand() % maxval;
 			mat2[i][j] = rand() % maxval;
 		}
@@ -60,10 +60,7 @@ void mmm_reset(int **matrix)
 {
 	for (int i = 0; i < matdim; i++)
 		for (int j = 0; j < matdim; j++)
-		{
-			// Set this back to 100
 			matrix[i][j] = 0;
-		}
 	return;
 }
 
@@ -132,6 +129,12 @@ void *mmm_par(void *args)
 	// TODO - code to perform parallel MMM
 	// TODO: delete these line
 	printf("In mmm_par\n");
+	// TODO: for now, just copy mat3 into mat4 (undo this!)
+	// TODO: this will be done nthreads times haha
+	for (int i = 0; i < matdim; i++)
+		for (int j = 0; j < matdim; j++)
+			mat4[i][j] = mat3[i][j];
+
 	return NULL;
 }
 
@@ -144,8 +147,13 @@ void *mmm_par(void *args)
  */
 double mmm_verify()
 {
-	// TODO
-	return -1;
+	// Compare matrix 3 (sequential) to matrix 4 (parallel)
+	double maxerr = 0;
+	for (int i = 0; i < matdim; i++)
+		for (int j = 0; j < matdim; j++)
+			maxerr = fmax(maxerr, fabs(mat3[i][j] - mat4[i][j]));
+
+	return maxerr;
 }
 
 /**
