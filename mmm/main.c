@@ -4,9 +4,56 @@
 #include <string.h>
 #include <errno.h>	// for errno
 #include <limits.h> // for INT_MAX, INT_MIN
+#include <math.h>	// ceil
 #include "rtclock.h"
 #include "mmm.h"
 #include "parseInputs.h"
+
+void run_mmm_par(int nthreads, int matdim)
+{
+	// prepare thread arguments
+	thread_args *args = (thread_args *)malloc(nthreads * sizeof(thread_args));
+
+	// TODO: do this, or change command line requirements?
+	// If there are more threads than there are rows, dial back nthreads
+	if (nthreads > matdim)
+	{
+		printf("Dialing back number of threads from %d to %d to stay <= matrix size\n", nthreads, matdim);
+		nthreads = matdim;
+	}
+	// Get the number of rows per thread
+	// int rows_per_thread, rem;
+	printf("number of rows: %d\n", matdim);
+	int nrows; // = ((float)matdim / nthreads);
+	int nrowsdone = 0;
+
+	for (int i = 0; i < nthreads; i++)
+	{
+		nrows = (int)ceil((float)(matdim - nrowsdone) / (nthreads - i));
+		// rem = matdim % (nthreads - i);
+		printf("rows for thread: %d\n", nrows);
+		args[i].tid = i;
+		args[i].first = i;
+		args[i].last = i;
+		nrowsdone += nrows;
+		printf("rows done: %d\n", nrowsdone);
+	}
+
+	// allocate space to hold threads
+	pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
+	for (int i = 0; i < nthreads; i++)
+		pthread_create(&threads[i], NULL, mmm_par, &args[i]);
+
+	// Wait for threads to finish, then join
+	for (int i = 0; i < nthreads; i++)
+		pthread_join(threads[i], NULL);
+
+	// clean up dynamically allocated memory
+	free(threads);
+	threads = NULL;
+	free(args);
+	args = NULL;
+}
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +70,7 @@ int main(int argc, char *argv[])
 	// parseInputs(inputs, argc, argv);
 
 	// TODO: remove following block
-	int inputs[3] = {1, 4, 1};
+	int inputs[3] = {3, 4, 1};
 
 	// The variables
 	int nthreads = inputs[0];
@@ -55,47 +102,30 @@ int main(int argc, char *argv[])
 	// Always do sequential.  One run to warm up, then three to test
 	mmm_seq();
 	clockstart = rtclock(); // start clocking
-	mmm_seq();
-	mmm_seq();
-	mmm_seq();
+	int nruns = 3.;
+	for (int i = 0; i < nruns; i++)
+		mmm_seq();
 	clockend = rtclock(); // stop clocking
-	float seqTime = (clockend - clockstart) / 3;
+	float seqTime = (clockend - clockstart) / nruns;
 	printf("Sequential Time (avg of 3 runs): %.6f sec\n", seqTime);
 
 	// start: stuff I want to clock
 	if (runtype == 1)
 	{
+		// windup
+		run_mmm_par(nthreads, matdim);
+
 		// start clocking
 		clockstart = rtclock();
-		// prepare thread arguments
-		thread_args *args = (thread_args *)malloc(nthreads * sizeof(thread_args));
-		// TODO: fix this - currently assuming nthreads = matdim
-		for (int i = 0; i < nthreads; i++)
-		{
-			args[i].tid = i;
-			args[i].first = i;
-			args[i].last = i;
-		}
-
-		// allocate space to hold threads
-		pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
-		for (int i = 0; i < nthreads; i++)
-			pthread_create(&threads[i], NULL, mmm_par, &args[i]);
-
-		// Wait for threads to finish, then join
-		for (int i = 0; i < nthreads; i++)
-			pthread_join(threads[i], NULL);
-
-		// clean up dynamically allocated memory
-		free(threads);
-		threads = NULL;
-		free(args);
-		args = NULL;
-
+		for (int i = 0; i < nruns; i++)
+			run_mmm_par(nthreads, matdim);
 		// stop clocking
 		clockend = rtclock();
 
-		float parTime = (clockend - clockstart) / 3;
+		// Get average run time
+		float parTime = (clockend - clockstart) / nruns;
+
+		// Get maximum error between matrix for sequential and for parallel
 		int maxerr = mmm_verify();
 
 		printf("Parallel Time (avg of 3 runs): %.6f sec\n", parTime);
