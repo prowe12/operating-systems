@@ -102,15 +102,13 @@ void mmm_freeup()
 void mmm_seq()
 {
 
-	// TODO: is there a faster way?
-	// Zero out mat3
-	// mmm_reset(mat3);
-
 	// Loop over rows of mat1
 	for (int i = 0; i < matdim; i++)
 	{
 		for (int j = 0; j < matdim; j++)
 		{
+			// First time through replace the existing value
+			// then add the rest
 			mat3[i][j] = mat1[i][0] * mat2[0][j];
 			for (int k = 1; k < matdim; k++)
 			{
