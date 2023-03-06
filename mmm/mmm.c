@@ -134,7 +134,10 @@ void *mmm_par(void *args)
 	{
 		for (int j = 0; j < matdim; j++)
 		{
-			for (int k = 0; k < matdim; k++)
+			// First time through replace the existing value
+			// then add the rest
+			mat4[i][j] = mat1[i][0] * mat2[0][j];
+			for (int k = 1; k < matdim; k++)
 			{
 				mat4[i][j] += mat1[i][k] * mat2[k][j];
 			}
