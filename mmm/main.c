@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		float parTime = (clockend - clockstart) / 3;
 
 		printf("Parallel Time (avg of 3 runs): %.6f sec\n", parTime);
-		printf("Speedup: %.6f sec\n", (seqTime / parTime));
+		printf("Speedup: %.6f\n", (seqTime / parTime));
 		printf("Verifying... largest error between parallel and sequential matrix: \n");
 	}
 
