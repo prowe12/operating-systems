@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	// parseInputs(inputs, argc, argv);
 
 	// TODO: remove following block
-	int inputs[3] = {1, 3, 0};
+	int inputs[3] = {1, 4, 0};
 
 	// The variables
 	int nthreads = inputs[0];
@@ -41,7 +41,23 @@ int main(int argc, char *argv[])
 	clockstart = rtclock(); // start clocking
 
 	// start: stuff I want to clock
-
+	if (runtype == 0)
+	{
+		// TODO: delete this line
+		printf("You have chosen sequential\n");
+		mmm_seq();
+	}
+	else if (runtype == 1)
+	{
+		// TODO: delete this line
+		printf("You have chosen parallel implementation\n");
+		// mmm_par();
+	}
+	else
+	{
+		printf("Unexpected value for runtype\n");
+		exit(EXIT_FAILURE);
+	}
 	// end: stuff I want to clock
 
 	clockend = rtclock(); // stop clocking
