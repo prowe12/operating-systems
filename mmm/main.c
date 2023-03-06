@@ -11,6 +11,9 @@
 
 void run_mmm_par(int nthreads, int matdim)
 {
+	// Zero out mat4
+	mmm_reset(mat4);
+
 	// prepare thread arguments
 	thread_args *args = (thread_args *)malloc(nthreads * sizeof(thread_args));
 
@@ -24,20 +27,20 @@ void run_mmm_par(int nthreads, int matdim)
 	// Get the number of rows per thread
 	// int rows_per_thread, rem;
 	printf("number of rows: %d\n", matdim);
-	int nrows; // = ((float)matdim / nthreads);
+	int nrows;
 	int nrowsdone = 0;
-
+	int count = 0;
 	for (int i = 0; i < nthreads; i++)
 	{
 		nrows = (int)ceil((float)(matdim - nrowsdone) / (nthreads - i));
-		// rem = matdim % (nthreads - i);
-		printf("rows for thread: %d\n", nrows);
 		args[i].tid = i;
-		args[i].first = i;
-		args[i].last = i;
+		args[i].first = count;
+		args[i].last = count + nrows;
 		nrowsdone += nrows;
-		printf("rows done: %d\n", nrowsdone);
+		count += nrows;
+		printf("rows for thread: %d, first: %ld, last: %ld\n", nrows, args[i].first, args[i].last);
 	}
+	printf("rows done: %d\n", nrowsdone);
 
 	// allocate space to hold threads
 	pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
@@ -132,6 +135,11 @@ int main(int argc, char *argv[])
 		printf("Speedup: %.6f\n", (seqTime / parTime));
 		printf("Verifying... largest error between parallel and sequential matrix: %d\n", maxerr);
 	}
+
+	printf("mat3:\n");
+	mmm_print1(mat3);
+	printf("mat4:\n");
+	mmm_print1(mat4);
 
 	// Freeup the arrays
 	mmm_freeup();

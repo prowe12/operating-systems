@@ -126,15 +126,22 @@ void mmm_seq()
  */
 void *mmm_par(void *args)
 {
-	// TODO - code to perform parallel MMM
-	// TODO: delete these line
-	printf("In mmm_par\n");
-	// TODO: for now, just copy mat3 into mat4 (undo this!)
-	// TODO: this will be done nthreads times haha
-	for (int i = 0; i < matdim; i++)
-		for (int j = 0; j < matdim; j++)
-			mat4[i][j] = mat3[i][j];
 
+	// cast input as struct thread_args
+	thread_args *params = (thread_args *)args;
+
+	// Loop over rows of mat1
+	for (int i = params->first; i < params->last; i++)
+	{
+		printf("On row %d\n", i);
+		for (int j = 0; j < matdim; j++)
+		{
+			for (int k = 0; k < matdim; k++)
+			{
+				mat4[i][j] += mat1[i][k] * mat2[k][j];
+			}
+		}
+	}
 	return NULL;
 }
 
