@@ -43,7 +43,6 @@ int strToInt(char *inputStr)
 
 int getSize(char *sizeStr)
 {
-    printf("In getSize\n");
     int size = strToInt(sizeStr);
     return size;
 }
@@ -64,12 +63,11 @@ int getRunType(char *runTypeStr)
 
 int getNthreads(char *sizeStr)
 {
-    printf("In getNthreads \n");
     int nthreads = strToInt(sizeStr);
     return nthreads;
 }
 
-void parseInputs(char *buf, int argc, char *argv[])
+void parseInputs(int *buf, int argc, char *argv[])
 {
     // Get and QC number of inputs, where the possible run commands are:
     if (argc != 3 && argc != 4)
@@ -96,8 +94,8 @@ void parseInputs(char *buf, int argc, char *argv[])
         badNumberInputs();
         return;
     }
-    buf[0] = nthreads;
-    buf[1] = size;
-    buf[2] = 0;
+    buf[0] = runType;
+    buf[1] = nthreads;
+    buf[2] = size;
     return;
 }

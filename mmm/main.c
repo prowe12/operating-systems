@@ -26,7 +26,7 @@ void run_mmm_par(int nthreads, int matdim)
 	}
 	// Get the number of rows per thread
 	// int rows_per_thread, rem;
-	printf("number of rows: %d\n", matdim);
+	// printf("number of rows: %d\n", matdim);
 	int nrows;
 	int nrowsdone = 0;
 	int count = 0;
@@ -38,9 +38,9 @@ void run_mmm_par(int nthreads, int matdim)
 		args[i].last = count + nrows;
 		nrowsdone += nrows;
 		count += nrows;
-		printf("rows for thread: %d, first: %ld, last: %ld\n", nrows, args[i].first, args[i].last);
+		// printf("rows for thread: %d, first: %ld, last: %ld\n", nrows, args[i].first, args[i].last);
 	}
-	printf("rows done: %d\n", nrowsdone);
+	// printf("rows done: %d\n", nrowsdone);
 
 	// allocate space to hold threads
 	pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
@@ -68,17 +68,16 @@ int main(int argc, char *argv[])
 	// $ ./mmm P <threads> <size>
 
 	// Get the inputs
-	// int inputs[3] = {0};
-	// TODO: uncomment following block
-	// parseInputs(inputs, argc, argv);
+	int inputs[3] = {0};
+	parseInputs(inputs, argc, argv);
 
 	// TODO: remove following block
-	int inputs[3] = {3, 4, 1};
+	// int inputs[3] = {1, 3, 4};
 
 	// The variables
-	int nthreads = inputs[0];
-	int runtype = inputs[2];
-	matdim = inputs[1];
+	int runtype = inputs[0];
+	int nthreads = inputs[1];
+	matdim = inputs[2];
 
 	printf("========\n");
 	if (runtype == 0)
@@ -98,7 +97,7 @@ int main(int argc, char *argv[])
 	mmm_init();
 
 	// TODO: remove this line
-	mmm_print();
+	// mmm_print();
 
 	double clockstart, clockend;
 
@@ -136,10 +135,11 @@ int main(int argc, char *argv[])
 		printf("Verifying... largest error between parallel and sequential matrix: %d\n", maxerr);
 	}
 
-	printf("mat3:\n");
-	mmm_print1(mat3);
-	printf("mat4:\n");
-	mmm_print1(mat4);
+	// TODO: delete all this
+	// printf("mat3:\n");
+	// mmm_print1(mat3);
+	// printf("mat4:\n");
+	// mmm_print1(mat4);
 
 	// Freeup the arrays
 	mmm_freeup();

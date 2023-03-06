@@ -102,6 +102,7 @@ void mmm_freeup()
 void mmm_seq()
 {
 
+	// TODO: is there a faster way?
 	// Zero out mat3
 	mmm_reset(mat3);
 
@@ -116,7 +117,6 @@ void mmm_seq()
 			}
 		}
 	}
-	mmm_print1(mat3);
 
 	return;
 }
@@ -133,7 +133,6 @@ void *mmm_par(void *args)
 	// Loop over rows of mat1
 	for (int i = params->first; i < params->last; i++)
 	{
-		printf("On row %d\n", i);
 		for (int j = 0; j < matdim; j++)
 		{
 			for (int k = 0; k < matdim; k++)
