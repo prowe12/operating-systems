@@ -65,14 +65,48 @@ int main(int argc, char *argv[])
 	// start: stuff I want to clock
 	if (runtype == 1)
 	{
-		clockstart = rtclock(); // start clocking
-		mmm_seq();				// TODO: change to mmm_par!
-		clockend = rtclock();	// stop clocking
+		// start clocking
+		clockstart = rtclock();
+		// prepare thread arguments
+		thread_args *args = (thread_args *)malloc(nthreads * sizeof(thread_args));
+		// TODO: fix this - currently assuming nthreads = matdim
+		for (int i = 0; i < nthreads; i++)
+		{
+			args[i].tid = i;
+			args[i].first = i;
+			args[i].last = i;
+		}
+
+		// allocate space to hold threads
+		pthread_t *threads = (pthread_t *)malloc(nthreads * sizeof(pthread_t));
+		for (int i = 0; i < nthreads; i++)
+		{
+			pthread_create(&threads[i], NULL, mmm_par, &args[i]);
+		}
+
+		/** JOIN PHASE **/
+		// TODO: need to combine results!
+		// wait for threads to finish
+		for (int i = 0; i < nthreads; i++)
+		{
+			pthread_join(threads[i], NULL);
+		}
+
+		// clean up dynamically allocated memory
+		free(threads);
+		threads = NULL;
+		free(args);
+		args = NULL;
+
+		// stop clocking
+		clockend = rtclock();
+
 		float parTime = (clockend - clockstart) / 3;
+		int maxerr = mmm_verify();
 
 		printf("Parallel Time (avg of 3 runs): %.6f sec\n", parTime);
 		printf("Speedup: %.6f\n", (seqTime / parTime));
-		printf("Verifying... largest error between parallel and sequential matrix: \n");
+		printf("Verifying... largest error between parallel and sequential matrix: %d\n", maxerr);
 	}
 
 	// Freeup the arrays
