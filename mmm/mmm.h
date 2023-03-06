@@ -4,7 +4,7 @@
 // globals (anything here would be shared with all threads) */
 // I would declare the pointers to the matrices here (i.e., extern double **A, **B, **C),
 // as well as the size of the matrices, etc.
-extern int **mat1, **mat2, **mat3;
+extern int **mat1, **mat2, **mat3, **mat4;
 extern int matdim;
 
 void mmm_init();

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "mmm.h"
 
-int **mat1, **mat2, **mat3;
+int **mat1, **mat2, **mat3, **mat4;
 int matdim;
 
 /**
@@ -24,7 +24,8 @@ void mmm_init()
 	// malloc a size N array of pointers to ints
 	mat1 = (int **)malloc(sizeof(int *) * matdim);
 	mat2 = (int **)malloc(sizeof(int *) * matdim);
-	mat3 = (int **)malloc(sizeof(int *) * matdim);
+	mat3 = (int **)malloc(sizeof(int *) * matdim); // for mat1 x mat2, seq
+	mat4 = (int **)malloc(sizeof(int *) * matdim); // for mat1 x mat2, par
 
 	// iterate through each row and malloc a size N array of ints
 	for (int i = 0; i < matdim; i++)
@@ -32,19 +33,22 @@ void mmm_init()
 		mat1[i] = (int *)malloc(sizeof(int) * matdim);
 		mat2[i] = (int *)malloc(sizeof(int) * matdim);
 		mat3[i] = (int *)malloc(sizeof(int) * matdim);
+		mat4[i] = (int *)malloc(sizeof(int) * matdim);
 	}
 
-	// Populate the array with dummy values for now
-	// TODO: Use random numbers
+	// Populate the array with random numbers
 	for (int i = 0; i < matdim; i++)
 		for (int j = 0; j < matdim; j++)
 		{
-			// Set this back to 100
+			// TODO: Set this back to 100
 			int maxval = 10;
 			mat1[i][j] = rand() % maxval;
 			mat2[i][j] = rand() % maxval;
 		}
 
+	// Set matrices 3 and 4 to zero
+	mmm_reset(mat3);
+	mmm_reset(mat4);
 	return;
 }
 
@@ -75,19 +79,23 @@ void mmm_freeup()
 		free(mat1[i]);
 		free(mat2[i]);
 		free(mat3[i]);
+		free(mat4[i]);
 		// remove dangling pointers
 		mat1[i] = NULL;
 		mat2[i] = NULL;
 		mat3[i] = NULL;
+		mat4[i] = NULL;
 	}
 	// free original arrays
 	free(mat1);
 	free(mat2);
 	free(mat3);
+	free(mat4);
 	// remove dangling pointers
 	mat1 = NULL;
 	mat2 = NULL;
-	mat2 = NULL;
+	mat3 = NULL;
+	mat4 = NULL;
 	return;
 }
 
@@ -168,6 +176,9 @@ void mmm_print()
 
 	printf("\nmatrix 3:\n");
 	mmm_print1(mat3);
+
+	printf("\nmatrix 4:\n");
+	mmm_print1(mat4);
 
 	return;
 }
