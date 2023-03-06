@@ -14,5 +14,6 @@ void mmm_seq();
 void *mmm_par(void *args);
 double mmm_verify();
 void mmm_print();
+void mmm_print1(int **array);
 
 #endif /* MMM_H_ */
