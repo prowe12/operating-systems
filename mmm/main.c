@@ -10,6 +10,9 @@
 
 int main(int argc, char *argv[])
 {
+	// TODO list
+	// matrices int or double?
+
 	// Command Line call
 	// $ ./mmm S <size>
 	// $ ./mmm P <threads> <size>
@@ -20,12 +23,22 @@ int main(int argc, char *argv[])
 	// parseInputs(inputs, argc, argv);
 
 	// TODO: remove following block
-	int inputs[3] = {1, 4, 0};
+	int inputs[3] = {1, 4, 1};
 
 	// The variables
 	int nthreads = inputs[0];
 	int runtype = inputs[2];
 	matdim = inputs[1];
+
+	printf("========\n");
+	if (runtype == 0)
+		printf("mode: sequential\n");
+	else
+		printf("mode: parallel\n");
+
+	printf("thread count: %d\n", nthreads);
+	printf("size: %d\n", matdim);
+	printf("========\n");
 
 	printf("Type of run (0=>single, 1=>parallel): %d\n", runtype);
 	printf("nthreads = %d\n", nthreads);
@@ -38,32 +51,31 @@ int main(int argc, char *argv[])
 	mmm_print();
 
 	double clockstart, clockend;
+
+	// Always do sequential.  One run to warm up, then three to test
+	mmm_seq();
 	clockstart = rtclock(); // start clocking
+	mmm_seq();
+	mmm_seq();
+	mmm_seq();
+	clockend = rtclock(); // stop clocking
+	float seqTime = (clockend - clockstart) / 3;
+	printf("Sequential Time (avg of 3 runs): %.6f sec\n", seqTime);
 
 	// start: stuff I want to clock
-	if (runtype == 0)
+	if (runtype == 1)
 	{
-		// TODO: delete this line
-		printf("You have chosen sequential\n");
-		mmm_seq();
-	}
-	else if (runtype == 1)
-	{
-		// TODO: delete this line
-		printf("You have chosen parallel implementation\n");
-		// mmm_par();
-	}
-	else
-	{
-		printf("Unexpected value for runtype\n");
-		exit(EXIT_FAILURE);
-	}
-	// end: stuff I want to clock
+		clockstart = rtclock(); // start clocking
+		mmm_seq();				// TODO: change to mmm_par!
+		clockend = rtclock();	// stop clocking
+		float parTime = (clockend - clockstart) / 3;
 
-	clockend = rtclock(); // stop clocking
-	printf("Time taken: %.6f sec\n", (clockend - clockstart));
+		printf("Parallel Time (avg of 3 runs): %.6f sec\n", parTime);
+		printf("Speedup: %.6f sec\n", (seqTime / parTime));
+		printf("Verifying... largest error between parallel and sequential matrix: \n");
+	}
 
-	// Freeup the array
+	// Freeup the arrays
 	mmm_freeup();
 
 	return 0;
