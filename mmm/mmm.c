@@ -39,10 +39,29 @@ void mmm_init()
 	for (int i = 0; i < matdim; i++)
 		for (int j = 0; j < matdim; j++)
 		{
-			mat1[i][j] = rand() % 100;
-			mat2[i][j] = rand() % 100;
-			mat3[i][j] = rand() % 100;
+			// Set this back to 100
+			int maxval = 10;
+			mat1[i][j] = rand() % maxval;
+			mat2[i][j] = rand() % maxval;
 		}
+
+	return;
+}
+
+void setToTestVals()
+{
+	for (int j = 0; j < matdim; j++)
+	{
+		mat1[0][j] = 1;
+		mat1[1][j] = 2;
+		mat1[2][j] = 3;
+	}
+	for (int i = 0; i < matdim; i++)
+	{
+		mat2[i][0] = 1;
+		mat2[i][1] = 2;
+		mat2[i][2] = 3;
+	}
 
 	return;
 }
@@ -65,7 +84,7 @@ void mmm_freeup()
 	// free each row
 	for (int i = 0; i < matdim; i++)
 	{
-		// Free ith rwo
+		// Free ith row
 		free(mat1[i]);
 		free(mat2[i]);
 		free(mat3[i]);
@@ -91,6 +110,22 @@ void mmm_freeup()
 void mmm_seq()
 {
 	// TODO - code to perform sequential MMM
+	// TODO: delete these lines
+	printf("In mmm_seq\n");
+
+	// Loop over rows of mat1
+	for (int i = 0; i < matdim; i++)
+	{
+		for (int j = 0; j < matdim; j++)
+		{
+			for (int k = 0; k < matdim; k++)
+			{
+				mat3[i][j] += mat1[i][k] * mat2[k][j];
+			}
+		}
+	}
+	mmm_print1(mat3);
+
 	return;
 }
 
@@ -100,6 +135,8 @@ void mmm_seq()
 void *mmm_par(void *args)
 {
 	// TODO - code to perform parallel MMM
+	// TODO: delete this line
+	printf("In mmm_par\n");
 	return NULL;
 }
 
