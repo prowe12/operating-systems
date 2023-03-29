@@ -64,7 +64,7 @@ void removeTrailingReturn(char *moddedStr)
 }
 
 /**
- * Remove trailing spaces
+ * Remove ampersand at end
  * @param moddedStr (OUT)
  */
 int removeAmp(char *moddedStr)
