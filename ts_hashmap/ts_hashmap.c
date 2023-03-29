@@ -6,33 +6,9 @@
 #include "ts_hashmap.h"
 
 // shared lock
-pthread_mutex_t *lock;
+pthread_mutex_t **lock;
 
 // One lock for every element in the linked list
-
-/**
- * Set up the locks
- */
-// int lockfun()
-// {
-//   printf("Setting up locks\n");
-
-//   lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-//   pthread_mutex_init(lock, NULL); // sets it to "unlocked" state
-//   printf("I have initialized the lock to unlocked\n");
-
-//   // Creating threads
-//   pthread_t t1, t2;
-//   pthread_create(&t1, NULL, doStuff, NULL);
-//   pthread_create(&t2, NULL, doStuff, NULL);
-
-//   // (joining threads)
-//   pthread_join(t1, NULL);
-//   pthread_join(t2, NULL);
-
-//   pthread_mutex_destroy(lock);
-//   return 0;
-// }
 
 /**
  * Creates a new thread-safe hashmap.
@@ -50,12 +26,15 @@ ts_hashmap_t *initmap(int capacity)
   // malloc the table based on capacity so that it's on the heap
   mymap->table = malloc(sizeof(ts_entry_t *) * capacity);
 
-  for (int i = 0; i < mymap->capacity; i++)
-    mymap->table[i] = NULL;
-
   // Set up the lock and initialize it to unlocked
-  lock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-  pthread_mutex_init(lock, NULL); // sets it to "unlocked" state
+  lock = (pthread_mutex_t **)malloc(sizeof(pthread_mutex_t) * capacity);
+
+  for (int i = 0; i < mymap->capacity; i++)
+  {
+    mymap->table[i] = NULL;
+    lock[i] = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(lock[i], NULL); // sets it to "unlocked" state
+  }
 
   return mymap;
 }
@@ -69,13 +48,12 @@ ts_hashmap_t *initmap(int capacity)
 int get(ts_hashmap_t *map, int key)
 {
   int val = INT_MAX;
+  unsigned int arrind = hash(key, map->capacity);
 
-  pthread_mutex_lock(lock); // try to acquire the lock
+  pthread_mutex_lock(lock[arrind]); // try to acquire the lock
 
   /////////////////////////////////////////
   // << critical section >>
-  unsigned int arrind = hash(key, map->capacity);
-
   // Make sure there is something at this index
   ts_entry_t *entry = map->table[arrind];
   int notdone = 1;
@@ -94,7 +72,7 @@ int get(ts_hashmap_t *map, int key)
   // any value beyond this limit.
   /////////////////////////////////////////
 
-  pthread_mutex_unlock(lock); // release
+  pthread_mutex_unlock(lock[arrind]); // release
 
   return val;
 }
@@ -111,15 +89,15 @@ int put(ts_hashmap_t *map, int key, int value)
 
   int val = INT_MAX;
 
-  pthread_mutex_lock(lock); // try to acquire the lock
-
-  /////////////////////////////////////////
-  // << critical section >>
-
   // Get the array index: cast the key into an unsigned int, assuming the int is positive
   // then modulo key by the size of the array.
   // unsigned int arrind = key % map->capacity;
   unsigned int arrind = hash(key, map->capacity);
+
+  pthread_mutex_lock(lock[arrind]); // try to acquire the lock
+
+  /////////////////////////////////////////
+  // << critical section >>
 
   // Because the array element points to the head of the entry list (or NULL),
   // you can then walk the list of entries to search for a key.
@@ -158,7 +136,7 @@ int put(ts_hashmap_t *map, int key, int value)
 
   /////////////////////////////////////////
 
-  pthread_mutex_unlock(lock); // release
+  pthread_mutex_unlock(lock[arrind]); // release
 
   return val;
 }
@@ -171,16 +149,14 @@ int put(ts_hashmap_t *map, int key, int value)
  */
 int del(ts_hashmap_t *map, int key)
 {
-  pthread_mutex_lock(lock); // try to acquire the lock
+
+  int val;
+  unsigned int arrind = hash(key, map->capacity);
+
+  pthread_mutex_lock(lock[arrind]); // try to acquire the lock
 
   /////////////////////////////////////////
   // << critical section >>
-
-  int val;
-
-  // Get the hash for this key
-  unsigned int arrind = hash(key, map->capacity);
-
   // Get the head and test its key
   ts_entry_t *entry = map->table[arrind];
 
@@ -226,7 +202,7 @@ int del(ts_hashmap_t *map, int key)
   }
 
   /////////////////////////////////////////
-  pthread_mutex_unlock(lock); // release
+  pthread_mutex_unlock(lock[arrind]); // release
   return val;
 }
 
@@ -275,6 +251,12 @@ void freemap(ts_hashmap_t *map)
       free(entry);
       entry = next;
     }
+
+    // Destroy the locks
+    pthread_mutex_destroy(lock[i]);
+
+    // Free the mallocd space for the locks
+    free(lock[i]);
   }
 
   // Free the table
@@ -283,8 +265,8 @@ void freemap(ts_hashmap_t *map)
   // Free the hashmap
   free(map);
 
-  // clear the locks
-  pthread_mutex_destroy(lock);
+  // Free the lock
+  free(lock);
 }
 
 // Helper functions
