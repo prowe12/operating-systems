@@ -18,6 +18,14 @@ typedef struct ts_hashmap_t
    int size;           // number of entries currently stored
 } ts_hashmap_t;
 
+/** struct to hold parameters to threads() **/
+typedef struct thread_args
+{
+   ts_hashmap_t *map; // The hahsmap
+   int randno;        // The integer for the random num
+
+} thread_args;
+
 // function declarations
 ts_hashmap_t *initmap(int capacity);
 int get(ts_hashmap_t *map, int key);
@@ -30,3 +38,5 @@ ts_entry_t *getentry(int key, int value);
 void addtohead(ts_hashmap_t *map, int key, int value, unsigned int arrind);
 void addtoend(ts_hashmap_t *map, int key, int value, ts_entry_t *entry);
 unsigned int hash(int key, int capacity);
+
+// extern pthread_mutex_t *array  -- do I need something like this?

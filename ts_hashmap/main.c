@@ -8,6 +8,9 @@
 // checking for memory leaks:
 // valgrind --leak-check=full ./hashtest 2 2
 
+// Make the hashmap global
+ts_hashmap_t *map;
+
 void test1()
 {
 	unsigned int capacity = 5;
@@ -69,52 +72,99 @@ void test1()
 	return;
 }
 
-void davidstest(int capacity, int numthreads)
+/**
+ * Call the hashmap methods
+ */
+void *hashmap_runner()
 {
-	printf("Running test1\n");
-
-	// The initial size of the array should be allocated to capacity
-	// Get the thread-safe hashmap pointer.
-	ts_hashmap_t *map = initmap(capacity);
-
-	int choice;
-	for (int i = 0; i < numthreads * 100; i++)
+	int choice, randno;
+	for (int i = 0; i < 100; i++)
 	{
 		// Choose whether to delete, get, or put
 		choice = rand() % 3;
 
 		// Get a random number
-		int randno = rand() % 100;
+		randno = rand() % 100;
 
 		if (choice == 0)
-		{
-			// delete
-			printf("Implement delete!\n");
-		}
+			del(map, randno);
 		else if (choice == 1)
-		{
-			// get
-			printf("Implement get!\n");
-		}
+			get(map, randno);
 		else if (choice == 2)
-		{
-			// put
 			put(map, randno, randno);
-		}
 		else
 		{
 			printf("Bad value for choice; quitting\n");
-			return;
+			return 0;
 		}
 	}
+	return 0;
+}
 
-	printf("The filled map: \n");
+/**
+ * Function to test the hashmap methods
+ */
+void test(int capacity, int numthreads)
+{
+	printf("Running test1\n");
+
+	// The initial size of the array should be allocated to capacity
+	// Get the thread-safe hashmap pointer.
+	map = initmap(capacity);
+
+	// allocate space to hold threads
+	pthread_t *threads = (pthread_t *)malloc(numthreads * sizeof(pthread_t));
+
+	// Create threads
+	for (int i = 0; i < numthreads; i++)
+	{
+		pthread_create(&threads[i], NULL, hashmap_runner, NULL);
+	}
+
+	// Join threads
+	for (int ithread = 0; ithread < numthreads; ithread++)
+	{
+		pthread_join(threads[ithread], NULL);
+	}
+
 	printmap(map);
-
-	// Free all the space
 	freemap(map);
+	free(threads);
 
 	return;
+
+	// Unthreaded
+	// ts_hashmap_t *unthreaded_map = initmap(capacity);
+	// int choice;
+	// printf("Looping %d times\n", numthreads * 100);
+	// for (int i = 0; i < numthreads * 100; i++)
+	// {
+	// 	// Choose whether to delete, get, or put
+	// 	choice = rand() % 3;
+
+	// 	// Get a random number
+	// 	int randno = rand() % 100;
+
+	// 	if (choice == 0)
+	// 		del(map, randno);
+	// 	else if (choice == 1)
+	// 		get(map, randno);
+	// 	else if (choice == 2)
+	// 		put(map, randno, randno);
+	// 	else
+	// 	{
+	// 		printf("Bad value for choice; quitting\n");
+	// 		return;
+	// 	}
+	// }
+
+	// printf("The filled map: \n");
+	// printmap(map);
+
+	// // Free all the space
+	// freemap(map);
+
+	// return;
 }
 
 int main(int argc, char *argv[])
@@ -127,8 +177,9 @@ int main(int argc, char *argv[])
 	int numthreads = atoi(argv[1]);
 	int capacity = (unsigned int)atoi(argv[2]);
 
-	test1();
-	// davidstest(capacity, numthreads);
+	// test1();
+	test(capacity, numthreads);
+	// lockfun();
 
 	return 0;
 }
