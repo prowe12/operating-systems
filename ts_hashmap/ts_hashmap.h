@@ -1,5 +1,8 @@
 #include <pthread.h>
 
+// globals (anything here would be shared with all threads) */
+// pthread_mutex_t **lock; // global array of locks
+
 // A hashmap entry stores the key, value
 // and a pointer to the next entry
 typedef struct ts_entry_t
