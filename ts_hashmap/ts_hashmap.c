@@ -5,10 +5,8 @@
 #include <string.h>
 #include "ts_hashmap.h"
 
-// shared lock
+// shared array of locks
 pthread_mutex_t **lock;
-
-// One lock for every element in the linked list
 
 /**
  * Creates a new thread-safe hashmap.
@@ -175,9 +173,12 @@ int del(ts_hashmap_t *map, int key)
     }
     else
     {
+      // Replace the deleted node with the next node
       map->table[arrind] = entry->next;
       free(entry);
     }
+    // Reduces the size
+    map->size -= 1;
   }
   else
   {
@@ -195,6 +196,9 @@ int del(ts_hashmap_t *map, int key)
 
         // TODO: free it
         free(tmp);
+
+        // Reduces the size
+        map->size -= 1;
       }
       else
         entry = entry->next;
