@@ -6,10 +6,36 @@ public class BridgeRunner {
 
 	public static void main(String[] args) {
 
-		// TODO - check command line inputs
-		// TODO - for now, hardwire
-		int numcars = 1;
-		int limit = 0;
+		int limit, numcars;
+
+		// Check command line inputs
+		// Make sure there are only 2 inputs
+		if (args.length != 2) {
+			System.out.println("Usage: java BridgeRunner <bridge limit> <num cars>");
+			return;
+		}
+		// Make sure both are integers
+		try {
+			limit = Integer.parseInt(args[0]);
+			numcars = Integer.parseInt(args[1]);
+		} catch (Exception e) {
+			System.out.println("Usage: java BridgeRunner <bridge limit> <num cars>");
+			return;
+		}
+
+		// Do not allow a bridge limit <= 0
+		if (limit <= 0) {
+			System.out.println("Bridge must allow at least one car");
+			System.out.println("Usage: java BridgeRunner <bridge limit> <num cars>");
+			return;
+		}
+
+		// Do not allow negative number of cars
+		if (numcars < 0) {
+			System.out.println("Number of cars must be >= 0");
+			System.out.println("Usage: java BridgeRunner <bridge limit> <num cars>");
+			return;
+		}
 
 		// Instantiate the bridge
 		Bridge bridge = new OneLaneBridge(limit);

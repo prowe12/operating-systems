@@ -21,7 +21,6 @@ public class OneLaneBridge extends Bridge {
     }
 
     public void arrive(Car car) {
-        System.out.println("One Lane Bridge: car arrives at bridge: " + car);
         // lock on drive condition variable
         synchronized (drive) {
 
@@ -31,7 +30,6 @@ public class OneLaneBridge extends Bridge {
                 // If the bridge is empty, flip bridge direction to direction of this car
                 if (bridge.size() == 0) {
                     direction = car.getDirection();
-                    System.out.println("Bridge is empty. Direction is now same as car: " + direction);
                 } else {
                     try {
                         drive.wait(); // unlock drive and wait (atomically!)
