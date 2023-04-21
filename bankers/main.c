@@ -34,14 +34,6 @@ void sanityCheck(int **allocMat, int **totMat, int **needMat)
   return;
 }
 
-void qcInputs(int argc, char *argv[])
-{
-  // TODO: should have one input, which is name of file
-  // if not, print message:
-  // Usage: ./bankersSol <scenario file>
-  return;
-}
-
 /**
  * Quality control the inputs and return the filename
  * @param argc  Number of inputs
@@ -52,13 +44,13 @@ void qcInputs(int argc, char *argv[])
 char *parseInputs(int argc, char *argv[])
 {
   // Get and QC number of inputs, where the possible run commands are:
-  if (argc != 1)
+  if (argc != 2)
   {
     printf("Usage: ./bankersSol <scenario file>\n");
     exit(EXIT_FAILURE);
   }
   // Return the filename
-  char *filename = argv[0];
+  char *filename = argv[1];
   return filename;
 }
 
