@@ -58,16 +58,16 @@ int isSafe(int *availVec, int **allocMat, int **needMat, int NPROC, int NRES)
         }
     }
 
-    if ((unfinished) & (notstuck))
-        printf("Unfinished and not stuck\n");
-    else if ((unfinished) & (notstuck == 0))
-        printf("Unfinished and stuck\n");
-    else if ((unfinished == 0) & (notstuck))
-        printf("Finished and not stuck!\n");
-    else if ((unfinished == 0) & (notstuck == 0))
-        printf("Stuck but who cares, we finished!\n");
-    else
-        printf("How did this happen?");
+    // if ((unfinished) & (notstuck))
+    //     printf("Unfinished and not stuck\n");
+    // else if ((unfinished) & (notstuck == 0))
+    //     printf("Unfinished and stuck\n");
+    // else if ((unfinished == 0) & (notstuck))
+    //     printf("Finished and not stuck!\n");
+    // else if ((unfinished == 0) & (notstuck == 0))
+    //     printf("Stuck but who cares, we finished!\n");
+    // else
+    //     printf("How did this happen?");
 
     // As soon as we find one that did not finish, we can return 0 for unsave
     if (unfinished)
