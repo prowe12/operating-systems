@@ -53,8 +53,10 @@ void addmats(int **mat1, int **mat2)
     return;
 }
 
-// TODO - function to subtract two matrices
-void subtractmats(int **mat1, int **mat2, int **result, int ncols, int nrows)
+/**
+ * Subtract two matrices
+ */
+void subtractmats(int **mat1, int **mat2, int **result, int nrows, int ncols)
 {
     for (int i = 0; i < nrows; i++)
         for (int j = 0; j < ncols; j++)
@@ -63,13 +65,17 @@ void subtractmats(int **mat1, int **mat2, int **result, int ncols, int nrows)
 }
 
 /**
- *
+ * Determine if one vecotr is >= another
+ * @param greater  The vector to test (should be >= the other)
+ * @param vec2  The vector to compare against (should be < the other)
+ * @returns 1 if True, 0 if False
  */
-int vec1GreaterOrEqualVec2(int *workVec, int *threadNeedVec, int NRES)
+int vec1GreaterOrEqualVec2(int *greater, int *lesser, int ncols)
 {
-    int result[NRES];
-    subtractvecs(workVec, threadNeedVec, result, NRES);
-    for (int col = 0; col < NRES; col++)
+    // TODO: I am not mallocing this.  Will this get me into trouble if it is too big?
+    int result[ncols];
+    subtractvecs(greater, lesser, result, ncols);
+    for (int col = 0; col < ncols; col++)
         if (result[col] < 0)
             return 0;
     return 1;
@@ -86,7 +92,10 @@ void subtractvecs(int *vec1, int *vec2, int *result, int ncols)
 }
 
 /**
- * Add two vectors
+ * Add one vector to another vector
+ * @param vec1  The vector that will hold the sum
+ * @param vec2  The vector that will be added to vec1
+ * @param ncols  The number of columns in each vector
  */
 void addVec2toVec1(int *vec1, int *vec2, int ncols)
 {
