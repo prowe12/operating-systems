@@ -72,12 +72,22 @@ void subtractmats(int **mat1, int **mat2, int **result, int nrows, int ncols)
  */
 int vec1GreaterOrEqualVec2(int *greater, int *lesser, int ncols)
 {
-    // TODO: I am not mallocing this.  Will this get me into trouble if it is too big?
-    int result[ncols];
+    // since ncols is unknown, malloc result
+    int *result = (int *)malloc(sizeof(int) * ncols);
+
     subtractvecs(greater, lesser, result, ncols);
     for (int col = 0; col < ncols; col++)
         if (result[col] < 0)
+        {
+            free(result);
+            result = NULL;
             return 0;
+        }
+
+    // free result and remove dangling pointers
+    free(result);
+    result = NULL;
+
     return 1;
 }
 
