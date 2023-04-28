@@ -11,11 +11,6 @@
 // Note: check for memory leaks using, e.g.:
 // valgrind --leak-check=full ./bankers safe.txt
 
-// Global variables: matrices and matrix dimensions
-// TODO: I do not think these need to be globals (we are not multithreading)
-// int NRES;       // number of resource types (number of columns)
-// int NPROC;      // number of processes (number of rows)
-
 /**
  * Sanity check: ensure the values given in the files are correct.
  * 1) Ensure currently allocated resources do not exceed total number of resources.
@@ -77,32 +72,6 @@ char *parseInputs(int argc, char *argv[])
 }
 
 /**
- * Allocate the matrices on the heap.
- */
-void initMats(int *availVec, int **allocMat, int **needMat, int **maxMat, int NRES, int NPROC)
-{
-  // TODO: this does not work
-
-  // malloc the vectors
-  availVec = (int *)malloc(sizeof(int) * NRES);
-
-  // malloc the number of rows first - a size NPROC array of pointers to ints
-  allocMat = (int **)malloc(sizeof(int *) * NPROC);
-  needMat = (int **)malloc(sizeof(int *) * NPROC);
-  maxMat = (int **)malloc(sizeof(int *) * NPROC);
-
-  // iterate through each row and malloc a size NRES array of ints for the resources
-  for (int i = 0; i < NPROC; i++)
-  {
-    allocMat[i] = (int *)malloc(sizeof(int) * NRES);
-    needMat[i] = (int *)malloc(sizeof(int) * NRES);
-    maxMat[i] = (int *)malloc(sizeof(int) * NRES);
-  }
-
-  return;
-}
-
-/**
  * Free the matrices from the heap.
  */
 void freeMats(int *availVec, int **allocMat, int **needMat, int **maxMat, int NRES, int NPROC)
@@ -120,7 +89,7 @@ void freeMats(int *availVec, int **allocMat, int **needMat, int **maxMat, int NR
     maxMat[i] = NULL;
   }
 
-  // free the matrices
+  // free the vectors and matrices
   free(availVec);
   free(allocMat);
   free(needMat);
@@ -180,18 +149,13 @@ int main(int argc, char *argv[])
     totVec[i] = val;
   }
 
-  // TODO: which way?
-  // malloc space for matrices and vectors
-  // initMats(*availVec, allocMat, needMat, maxMat, NRES, NPROC);
-  // malloc the vectors
+  // Malloc the vectors and matrices
   availVec = (int *)malloc(sizeof(int) * NRES);
-
-  // malloc the number of rows first - a size NPROC array of pointers to ints
   allocMat = (int **)malloc(sizeof(int *) * NPROC);
   needMat = (int **)malloc(sizeof(int *) * NPROC);
   maxMat = (int **)malloc(sizeof(int *) * NPROC);
 
-  // iterate through each row and malloc a size NRES array of ints for the resources
+  // For the matrices iterate through each row and malloc a size NRES array of ints for the resources
   for (int i = 0; i < NPROC; i++)
   {
     allocMat[i] = (int *)malloc(sizeof(int) * NRES);
@@ -236,10 +200,20 @@ int main(int argc, char *argv[])
   sanityCheck(availVec, needMat, maxMat, NPROC, NRES);
 
   // Run banker's safety algorithm
+  // First see if we can find even one safe ordering, and if not print the unsafe message
   int safety = isSafe(availVec, allocMat, needMat, NPROC, NRES);
+
+  int *threadorder = (int *)malloc(sizeof(int) * NPROC);
+  // int *workVec = (int *)malloc(sizeof(int) * NRES);
+  // clonevec(availVec, workVec, NRES);
+
+  int safety2 = getorder(0, NPROC, threadorder, 0, availVec, allocMat, needMat, NRES);
+  printf("safety2: %d\n", safety2);
 
   // Free the space for the matrices
   freeMats(availVec, allocMat, needMat, maxMat, NRES, NPROC);
+  free(threadorder);
+  // free(workVec);
 
   return safety;
 }
