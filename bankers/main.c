@@ -16,6 +16,11 @@
  * 1) Ensure currently allocated resources do not exceed total number of resources.
  * 2) Ensure each thread’s needs do not exceed its max demands for each resource type.
  * If either of these tests fail, output an error and exit.
+ * @param availVec  Number of resources available for each type
+ * @param needMat  Number of resources needed by each thread for each resource type
+ * @param maxMat  Total number of resources each thread will ever need, for each resource type
+ * @param nproc  Number of processes/threads (number of rows)
+ * @param nres  Number of resource types (number of columns)
  */
 void sanityCheck(int *availVec, int **needMat, int **maxMat, int NPROC, int NRES)
 {
@@ -72,12 +77,39 @@ char *parseInputs(int argc, char *argv[])
 }
 
 /**
- * Free the matrices from the heap.
+ * Free the vectors from the heap
+ * @param availVec  Number of resources available for each type
+ * @param threadorderVec  The order the threads/process are run
+ * @param workVec  The current work vector
+ * @param finishVec  The state of each thread (finished=>1, else 0)
  */
-void freeMats(int *availVec, int **allocMat, int **needMat, int **maxMat, int NRES, int NPROC)
+void freeVecs(int *availVec, int *threadorderVec, int *workVec, int *finishVec)
+{
+  // free the vectors
+  free(availVec);
+  free(threadorderVec);
+  free(workVec);
+  free(finishVec);
+
+  // remove dangling pointers
+  availVec = NULL;
+  threadorderVec = NULL;
+  workVec = NULL;
+  finishVec = NULL;
+  return;
+}
+
+/**
+ * Free the matrices from the heap.
+ * @param allocMat  number of resources allocated to each thread for each resource type
+ * @param needMat  Number of resources needed by each thread for each resource type
+ * @param maxMat  Total number of resources each thread will ever need, for each resource type
+ * @param nproc  Number of processes/threads (number of rows)
+ */
+void freeMats(int **allocMat, int **needMat, int **maxMat, int nproc)
 {
   // free each row
-  for (int i = 0; i < NPROC; i++)
+  for (int i = 0; i < nproc; i++)
   {
     // Free ith row
     free(allocMat[i]);
@@ -90,13 +122,11 @@ void freeMats(int *availVec, int **allocMat, int **needMat, int **maxMat, int NR
   }
 
   // free the vectors and matrices
-  free(availVec);
   free(allocMat);
   free(needMat);
   free(maxMat);
 
   // remove dangling pointers
-  availVec = NULL;
   allocMat = NULL;
   needMat = NULL;
   maxMat = NULL;
@@ -108,6 +138,7 @@ void freeMats(int *availVec, int **allocMat, int **needMat, int **maxMat, int NR
  * Run the bankers algorithm
  * @param argc  Number of input arguments
  * @param argv  Input arguments - file name
+ * @returns  1 if the threads can be run safely, else 0
  */
 int main(int argc, char *argv[])
 {
@@ -199,21 +230,21 @@ int main(int argc, char *argv[])
 
   sanityCheck(availVec, needMat, maxMat, NPROC, NRES);
 
-  // Run banker's safety algorithm
-  // First see if we can find even one safe ordering, and if not print the unsafe message
-  int safety = isSafe(availVec, allocMat, needMat, NPROC, NRES);
+  // Set up the other vectors; set all threads to unfinished
+  // and clone the work vector from the availability vector
+  int *finishVec = (int *)malloc(sizeof(int) * NPROC);
+  for (int t = 0; t < NPROC; t++)
+    finishVec[t] = 0;
+  int *threadorderVec = (int *)malloc(sizeof(int) * NPROC);
+  int *workVec = (int *)malloc(sizeof(int) * NRES);
+  clonevec(availVec, workVec, NRES);
 
-  int *threadorder = (int *)malloc(sizeof(int) * NPROC);
-  // int *workVec = (int *)malloc(sizeof(int) * NRES);
-  // clonevec(availVec, workVec, NRES);
+  // Run the Bankers safety algorithm
+  int safety = isSafe(0, threadorderVec, finishVec, workVec, allocMat, needMat, NRES, NPROC);
 
-  int safety2 = getorder(0, NPROC, threadorder, 0, availVec, allocMat, needMat, NRES);
-  printf("safety2: %d\n", safety2);
-
-  // Free the space for the matrices
-  freeMats(availVec, allocMat, needMat, maxMat, NRES, NPROC);
-  free(threadorder);
-  // free(workVec);
+  // Free the mallocd space for the vectors and matrices
+  freeVecs(availVec, threadorderVec, workVec, finishVec);
+  freeMats(allocMat, needMat, maxMat, NPROC);
 
   return safety;
 }
