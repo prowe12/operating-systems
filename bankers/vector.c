@@ -8,7 +8,11 @@
 #include "vector.h"
 
 /**
- * clone (deep copy) matrices
+ * Clone (deep copy) a matrix
+ * @param mat  A pointer to the matrix to be cloned
+ * @param result  A pointer to the matrix to hold the clone
+ * @param nrows  The number of rows
+ * @param ncols  The number of columns
  */
 void clonemat(int **mat, int **result, int nrows, int ncols)
 {
@@ -19,7 +23,10 @@ void clonemat(int **mat, int **result, int nrows, int ncols)
 }
 
 /**
- * clone (deep copy) vectors
+ * Clone (deep copy) a vector
+ * @param vec  A pointer to the vector to be cloned
+ * @param result  A pointer to the vector to hold the clone
+ * @param ncols  The number of elements
  */
 void clonevec(int *vec, int *result, int ncols)
 {
@@ -28,14 +35,7 @@ void clonevec(int *vec, int *result, int ncols)
     return;
 }
 
-// TODO - function to compare two vectors
-int compare(int *vec1, int *vec2)
-{
-    // ???
-    return 1;
-}
-
-// TODO - function to sum over rows of a matrix
+// Sum over rows of a matrix
 void sumRows(int **mat, int nrows, int ncols, int *result)
 {
     for (int col = 0; col < ncols; col++)
@@ -47,14 +47,15 @@ void sumRows(int **mat, int nrows, int ncols, int *result)
     return;
 }
 
-// TODO - function to add two vectors/matrices
-void addmats(int **mat1, int **mat2)
-{
-    return;
-}
-
-// TODO - function to subtract two matrices
-void subtractmats(int **mat1, int **mat2, int **result, int ncols, int nrows)
+/**
+ * Subtract two matrices, placing the result in another matrix
+ * @param mat1  A pointer to the matrix to subtract from
+ * @param mat2  A pointer to the matrix to be subtracted
+ * @param result  A pointer to the matrix to hold the result
+ * @param nrows  The number of rows
+ * @param ncols  The number of columns
+ */
+void subtractmats(int **mat1, int **mat2, int **result, int nrows, int ncols)
 {
     for (int i = 0; i < nrows; i++)
         for (int j = 0; j < ncols; j++)
@@ -63,20 +64,39 @@ void subtractmats(int **mat1, int **mat2, int **result, int ncols, int nrows)
 }
 
 /**
- *
+ * Determine if one vector is >= another
+ * @param greater  A pointer to the vector to test (should be >= the other)
+ * @param lesser  A pointer to the vector to compare against (should be < the other)
+ * @param ncols  The number of elements in the vectors
+ * @returns 1 if True, 0 if False
  */
-int vec1GreaterOrEqualVec2(int *workVec, int *threadNeedVec, int NRES)
+int vec1GreaterOrEqualVec2(int *greater, int *lesser, int ncols)
 {
-    int result[NRES];
-    subtractvecs(workVec, threadNeedVec, result, NRES);
-    for (int col = 0; col < NRES; col++)
+    // since ncols is unknown, malloc result
+    int *result = (int *)malloc(sizeof(int) * ncols);
+
+    subtractvecs(greater, lesser, result, ncols);
+    for (int col = 0; col < ncols; col++)
         if (result[col] < 0)
+        {
+            free(result);
+            result = NULL;
             return 0;
+        }
+
+    // free result and remove dangling pointers
+    free(result);
+    result = NULL;
+
     return 1;
 }
 
 /**
- * Subtract two vectors
+ * Subtract two vectors and modify the result
+ * @param vec1  A pointer to the vector that vector to subtract from
+ * @param vec2  A pointer to the vector that will be subtracted
+ * @param result  A pointer to the resulting vector
+ * @param ncols  The number of elements in each vector
  */
 void subtractvecs(int *vec1, int *vec2, int *result, int ncols)
 {
@@ -86,7 +106,10 @@ void subtractvecs(int *vec1, int *vec2, int *result, int ncols)
 }
 
 /**
- * Add two vectors
+ * Add one vector to another vector
+ * @param vec1  A pointer to the vector that will hold the sum
+ * @param vec2  A pointer to the vector that will be added to vec1
+ * @param ncols  The number of columns in each vector
  */
 void addVec2toVec1(int *vec1, int *vec2, int ncols)
 {
@@ -96,7 +119,23 @@ void addVec2toVec1(int *vec1, int *vec2, int ncols)
 }
 
 /**
- * print the contents of a matrix
+ * Subtract one vector from another vector
+ * @param vec1  The vector that will hold the sum
+ * @param vec2  The vector that will be added to vec1
+ * @param ncols  The number of columns in each vector
+ */
+void subtractVec2fromVec1(int *vec1, int *vec2, int ncols)
+{
+    for (int i = 0; i < ncols; i++)
+        vec1[i] -= vec2[i];
+    return;
+}
+
+/**
+ * Print the contents of a matrix
+ * @param mat  The matrix to print
+ * @param nrows  The number of nrows
+ * @param ncols  The number of columns
  */
 void printmat(int **mat, int nrows, int ncols)
 {
@@ -111,7 +150,9 @@ void printmat(int **mat, int nrows, int ncols)
 }
 
 /**
- * print the contents of a vector
+ * Print the contents of a vector
+ * @param vec  The vector to print
+ * @param ncols  The number of elements
  */
 void printvec(int *vec, int ncols)
 {

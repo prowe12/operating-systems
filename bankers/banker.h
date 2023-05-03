@@ -1,2 +1,3 @@
 /* declarations related to banker's algorithm */
-int isSafe(int *availVec, int **allocMat, int **needMat, int NPROC, int NRES);
+void printUnsafe(int *finishVec, int NPROC);
+int isSafe(int j, int *order, int *finishVec, int *workVec, int **allocMat, int **needMat, int NRES, int nproc);
